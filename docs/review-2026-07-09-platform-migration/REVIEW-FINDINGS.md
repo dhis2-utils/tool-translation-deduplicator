@@ -1,7 +1,7 @@
 # Review findings: Translation Deduplicator Tool v1.0.0 (App Platform migration)
 
 Reviewed: 2026-07-09 · Scope: migration + code review + functional test (DHIS2 2.40–2.43, Sierra Leone + Laos) · Reviewer: agent (Claude Fable 5, Claude Code)
-DHIS2 versions tested: 2.40.12, 2.41.9, 2.42.x, 2.43.x (see UI-TEST-RESULTS.md)
+DHIS2 versions tested: 2.40.12, 2.41.9, 2.42.5.1, 2.43.0.1 (see UI-TEST-RESULTS.md)
 
 ## Summary
 
