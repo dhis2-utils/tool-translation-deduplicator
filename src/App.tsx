@@ -2,6 +2,7 @@ import { CssReset, CssVariables } from '@dhis2/ui'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
 import { createHashRouter, RouterProvider } from 'react-router-dom'
+import './locales'
 import { DuplicatesPage } from './pages/DuplicatesPage'
 import { SyncUrlWithGlobalShell } from './utils/SyncUrlWithGlobalShell'
 

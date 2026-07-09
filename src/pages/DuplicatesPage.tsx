@@ -127,11 +127,8 @@ export const DuplicatesPage = () => {
                     title={i18n.t('Some object types could not be checked')}
                 >
                     {i18n.t(
-                        'The following types were skipped (no access or an error occurred): {{types}}',
-                        {
-                            types: state.failedTypes.join(', '),
-                            nsSeparator: '###',
-                        }
+                        'The following types were skipped because of missing access or an error — {{types}}',
+                        { types: state.failedTypes.join(', ') }
                     )}
                 </NoticeBox>
             )}
@@ -163,9 +160,8 @@ export const DuplicatesPage = () => {
                                 onClick={handleFix}
                                 dataTest="fix-selected-button"
                             >
-                                {i18n.t('Fix selected ({{count}})', {
-                                    count: selectedKeys.size,
-                                    nsSeparator: '###',
+                                {i18n.t('Fix selected ({{selected}})', {
+                                    selected: selectedKeys.size,
                                 })}
                             </Button>
                             <Button

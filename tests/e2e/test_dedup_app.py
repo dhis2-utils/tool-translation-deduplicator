@@ -1,0 +1,276 @@
+#!/usr/bin/env python3
+"""End-to-end test suite for the Translation Deduplicator app.
+
+Runs against a live DHIS2 instance on which the app is installed and
+`tests/seed_duplicates.py` has been run. Verifies the full flow:
+scan -> table contents -> radio choice -> fix selected -> API state.
+
+Usage:
+    DHIS2_URL=http://dhis2-agent-td40:8080 DHIS2_USER=admin DHIS2_PASS=district \
+    LABEL=2.40-sl SEED_MANIFEST=seed-manifest.json \
+        python3 tests/e2e/test_dedup_app.py
+
+Results: tests/e2e/output/<LABEL>/results.json + step screenshots.
+WARNING: mutates data — only run against disposable instances.
+"""
+
+import base64
+import json
+import os
+import sys
+import time
+import urllib.request
+from pathlib import Path
+
+from playwright.sync_api import sync_playwright
+
+BASE = os.environ.get("DHIS2_URL", "http://localhost:8080").rstrip("/")
+USER = os.environ.get("DHIS2_USER", "admin")
+PASS = os.environ.get("DHIS2_PASS", "district")
+LABEL = os.environ.get("LABEL", "unlabelled")
+APP_KEY = os.environ.get("APP_KEY", "tool-translation-deduplicator")
+MANIFEST = os.environ.get("SEED_MANIFEST", "seed-manifest.json")
+SCAN_TIMEOUT_MS = int(os.environ.get("SCAN_TIMEOUT_MS", "300000"))
+
+OUT = Path(__file__).parent / "output" / LABEL
+OUT.mkdir(parents=True, exist_ok=True)
+
+AUTH = "Basic " + base64.b64encode(f"{USER}:{PASS}".encode()).decode()
+
+results = []
+console_log = []
+page_errors = []
+http_errors = []
+
+
+def api(method, path, body=None):
+    req = urllib.request.Request(
+        f"{BASE}/api/{path}",
+        method=method,
+        headers={"Authorization": AUTH, "Content-Type": "application/json"},
+        data=json.dumps(body).encode() if body is not None else None,
+    )
+    with urllib.request.urlopen(req) as r:
+        return json.loads(r.read() or "{}")
+
+
+def get_session_cookie():
+    req = urllib.request.Request(
+        f"{BASE}/api/me", headers={"Authorization": AUTH}
+    )
+    with urllib.request.urlopen(req) as r:
+        for c in r.headers.get_all("Set-Cookie") or []:
+            head = c.split(";", 1)[0]
+            name, _, value = head.partition("=")
+            if "JSESSIONID" in name:
+                return name.strip(), value.strip()
+    raise RuntimeError("No JSESSIONID cookie returned by /api/me")
+
+
+def record(step, status, detail=""):
+    results.append({"step": step, "status": status, "detail": detail})
+    print(f"[{LABEL}] {status}: {step}" + (f" — {detail}" if detail else ""))
+
+
+def find_app_frame(page):
+    """The app may be served top-level (<=2.41) or inside the global
+    shell iframe (2.42+). Return the frame containing the app root."""
+    deadline = time.time() + 60
+    while time.time() < deadline:
+        for frame in page.frames:
+            try:
+                if frame.locator(
+                    "[data-test='scan-progress'], [data-test='fix-selected-button'],"
+                    " [data-test='dhis2-uicore-noticebox']"
+                ).count():
+                    return frame
+            except Exception:
+                continue
+        page.wait_for_timeout(1000)
+    raise RuntimeError("App frame not found (scan UI never appeared)")
+
+
+def main():
+    manifest = json.loads(Path(MANIFEST).read_text())
+    seeded = manifest["objects"]
+
+    server_version = api("GET", "system/info?fields=version")["version"]
+    record("server version", "INFO", server_version)
+
+    cookie_name, cookie_value = get_session_cookie()
+    host = BASE.split("://", 1)[1].split(":")[0]
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        ctx = browser.new_context(viewport={"width": 1600, "height": 1000})
+        ctx.add_cookies([{
+            "name": cookie_name,
+            "value": cookie_value,
+            "domain": host,
+            "path": "/",
+        }])
+        page = ctx.new_page()
+        page.on("console", lambda m: console_log.append((m.type, m.text)))
+        page.on("pageerror", lambda e: page_errors.append(str(e)))
+        page.on(
+            "response",
+            lambda r: http_errors.append((r.status, r.url))
+            if r.status >= 400 else None,
+        )
+
+        # --- Step 1: app loads and scan starts
+        page.goto(f"{BASE}/api/apps/{APP_KEY}/index.html")
+        try:
+            frame = find_app_frame(page)
+            in_iframe = frame != page.main_frame
+            record("app loads", "PASS", f"iframe={in_iframe}")
+        except Exception as e:
+            page.screenshot(path=str(OUT / "01-load-FAIL.png"), full_page=True)
+            record("app loads", "FAIL", str(e))
+            raise
+        page.screenshot(path=str(OUT / "01-load.png"), full_page=True)
+
+        # --- Step 2: scan completes
+        try:
+            frame.locator("[data-test='fix-selected-button']").wait_for(
+                timeout=SCAN_TIMEOUT_MS
+            )
+            record("scan completes with duplicates found", "PASS")
+        except Exception as e:
+            page.screenshot(path=str(OUT / "02-scan-FAIL.png"), full_page=True)
+            record("scan completes with duplicates found", "FAIL", str(e))
+            raise
+        page.screenshot(path=str(OUT / "02-scan-done.png"), full_page=True)
+
+        # --- Step 3: all seeded duplicates are listed
+        rows = frame.locator("[data-test='duplicate-row']")
+        row_count = rows.count()
+        missing = []
+        for obj in seeded:
+            for dup in obj["duplicates"]:
+                sel = frame.locator(
+                    "[data-test='duplicate-row']",
+                    has_text=obj["id"],
+                ).filter(has_text=dup["property"])
+                if not sel.count():
+                    missing.append(f"{obj['id']}/{dup['locale']}/{dup['property']}")
+        if missing:
+            record("seeded duplicates listed", "FAIL", f"missing: {missing}")
+        else:
+            record(
+                "seeded duplicates listed", "PASS",
+                f"{row_count} rows total",
+            )
+
+        # --- Step 4: pick the second value for the first seeded DE NAME row
+        target = seeded[0]
+        name_dup = next(
+            d for d in target["duplicates"] if d["property"] == "NAME"
+        )
+        keep_value = name_dup["values"][1]  # choose the non-default option
+        target_row = frame.locator(
+            "[data-test='duplicate-row']", has_text=target["id"]
+        ).filter(has_text="NAME").first
+        try:
+            target_row.get_by_role("radio").nth(1).check(force=True)
+            record("choose non-default translation", "PASS", keep_value)
+        except Exception as e:
+            record("choose non-default translation", "FAIL", str(e))
+        page.screenshot(path=str(OUT / "03-radio.png"), full_page=True)
+
+        # --- Step 5: select all rows and fix
+        frame.locator("[data-test='select-all-checkbox'] input").check(
+            force=True
+        )
+        checked = frame.locator(
+            "[data-test='row-checkbox'] input:checked"
+        ).count()
+        if checked == row_count:
+            record("select all", "PASS", f"{checked}/{row_count}")
+        else:
+            record("select all", "FAIL", f"{checked}/{row_count}")
+        page.screenshot(path=str(OUT / "04-selected.png"), full_page=True)
+
+        frame.locator("[data-test='fix-selected-button']").click()
+        # Success = the table disappears and the success notice shows
+        try:
+            frame.locator("text=No duplicate translations found").wait_for(
+                timeout=120000
+            )
+            record("fix selected completes", "PASS")
+        except Exception as e:
+            page.screenshot(path=str(OUT / "05-fix-FAIL.png"), full_page=True)
+            record("fix selected completes", "FAIL", str(e))
+        page.screenshot(path=str(OUT / "05-fixed.png"), full_page=True)
+
+        # --- Step 6: verify via API that duplicates are gone and the
+        # chosen value was kept
+        api_failures = []
+        for obj in seeded:
+            stored = api(
+                "GET",
+                f"{obj['collection']}/{obj['id']}?fields=translations",
+            ).get("translations", [])
+            for dup in obj["duplicates"]:
+                remaining = [
+                    t["value"] for t in stored
+                    if t["locale"] == dup["locale"]
+                    and t["property"] == dup["property"]
+                ]
+                if len(remaining) != 1:
+                    api_failures.append(
+                        f"{obj['id']} {dup['locale']}/{dup['property']}: "
+                        f"{len(remaining)} translations remain: {remaining}"
+                    )
+        # the explicitly chosen value must be the one kept
+        stored = api(
+            "GET",
+            f"{target['collection']}/{target['id']}?fields=translations",
+        ).get("translations", [])
+        kept = [
+            t["value"] for t in stored
+            if t["locale"] == name_dup["locale"] and t["property"] == "NAME"
+        ]
+        if kept != [keep_value]:
+            api_failures.append(
+                f"chosen value not kept for {target['id']}: {kept} != [{keep_value}]"
+            )
+        if api_failures:
+            record("API state after fix", "FAIL", "; ".join(api_failures))
+        else:
+            record("API state after fix", "PASS")
+
+        # --- Step 7: rescan finds nothing
+        frame.locator("[data-test='rescan-button']").click()
+        try:
+            frame.locator("text=No duplicate translations found").wait_for(
+                timeout=SCAN_TIMEOUT_MS
+            )
+            record("rescan finds no duplicates", "PASS")
+        except Exception as e:
+            page.screenshot(path=str(OUT / "06-rescan-FAIL.png"), full_page=True)
+            record("rescan finds no duplicates", "FAIL", str(e))
+        page.screenshot(path=str(OUT / "06-rescan.png"), full_page=True)
+
+        browser.close()
+
+    summary = {
+        "label": LABEL,
+        "serverVersion": server_version,
+        "results": results,
+        "pageErrors": page_errors,
+        "consoleErrors": [m for m in console_log if m[0] == "error"],
+        "httpErrors": [
+            e for e in http_errors
+            # ignore benign 404s for optional resources
+            if not any(s in e[1] for s in ("favicon", "manifest.json"))
+        ],
+    }
+    (OUT / "results.json").write_text(json.dumps(summary, indent=2))
+    failed = [r for r in results if r["status"] == "FAIL"]
+    print(f"\n[{LABEL}] {len(results) - len(failed) - 1}/{len(results) - 1} steps passed")
+    sys.exit(1 if failed else 0)
+
+
+if __name__ == "__main__":
+    main()
