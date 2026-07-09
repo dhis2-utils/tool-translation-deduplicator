@@ -53,6 +53,37 @@ All findings below were **fixed during this engagement** unless marked open.
 - **Fix**: rephrased to avoid `:` in keys and renamed `count` → `selected`
   (commit `c03acb9`). Both strings now extract.
 
+#### M3. `maps` cannot be fixed: PUT round-trip fails with a 409 unique-constraint error (open — server-side limitation, needs an app-side mitigation)
+
+- **Where**: `src/hooks/useFixDuplicates.ts` (fix flow), observed live on the Laos DB
+- **What**: the GET `fields=:owner` + PUT round-trip is not idempotent for
+  `maps`: DHIS2 tries to re-insert the embedded mapViews and fails with
+  `ERROR: duplicate key value violates unique constraint "uk_1dw8g..." Key
+  (uid)=(dvs2LH2UUdo) already exists` (HTTP 409). The app correctly reports
+  the row as failed, but retrying can never succeed. The v0.2.0 app had the
+  same limitation.
+- **Fix suggestion**: mark object types whose PUT round-trip is known-broken
+  (currently `maps`) in the UI as "cannot be fixed via the API — needs
+  database-level cleanup", or fall back to `json-patch` for the
+  `translations` property only (`[{op:'replace', path:'/translations', ...}]`),
+  which avoids rewriting embedded objects.
+
+#### M4. `categoryOptionCombos` fixes are silently ignored by the server (open — server-side limitation, needs an app-side mitigation)
+
+- **Where**: `src/hooks/useFixDuplicates.ts` (fix flow), observed live on the Laos DB
+- **What**: `PUT /api/categoryOptionCombos/<uid>` returns a bare
+  `200 {"status":"OK"}` **without applying the change** (COCs are
+  system-managed; the importer ignores the update and the response carries no
+  import report to detect it). The app counts the row as fixed and removes it
+  from the table — but a rescan brings it back. Same behavior in v0.2.0.
+  Verified: after a "successful" fix, the COC still returns both `fr` NAME
+  values (`"5 -14 ans"` / `"5-14 ans"`).
+- **Fix suggestion**: after each PUT, re-read the object's translations and
+  verify the duplicate is gone before reporting success (cheap: one GET per
+  object), and/or special-case `categoryOptionCombos` with a "cannot be fixed
+  via the API" warning. The json-patch fallback from M3 may also work here
+  and is worth testing.
+
 ### Defects in the pre-migration (v0.2.0) app, resolved by the migration
 
 - **Selecting between identical duplicate values re-introduced both**
@@ -81,6 +112,13 @@ Rows render in schema-scan order. Fine for the typical handful of duplicates;
 an instance with hundreds of legacy duplicates would get one long unsorted
 table. Consider `DataTableColumnHeader` sorting if that becomes a real case.
 
+#### L1b. Long "fix all" runs give only a button spinner — `src/hooks/useFixDuplicates.ts`
+
+Objects are fixed sequentially (one GET + one PUT each). On the Laos DB with
+261 selected rows the run takes on the order of minutes with no progress
+indication beyond the button's loading state. Consider reusing the scan's
+LinearLoader for the fix phase.
+
 #### L2. Scan fetches every object of every translatable type with `paging=false`
 
 Same behavior as v0.2.0. On the Laos demo (larger DB) the scan still
@@ -106,6 +144,20 @@ DHIS2 hydrates translations into a `Set` on read: two records with identical
 (verified on 2.40: both rows present in the `dataelement.translations` jsonb,
 API returns one). They self-heal on any save of the object and can never
 appear in this app — only duplicates with *differing* values are actionable.
+
+#### N3. The Laos demo DB contains real duplicate translations
+
+The `lao_hmis_demo_v41` seed ships with **255 genuine duplicate translation
+rows** (mostly `fr`/`pt` NAME pairs) — real-world target data for this tool.
+The app found all of them and fixed all except the `maps`/`categoryOptionCombos`
+cases described in M3/M4. The Sierra Leone seeds contain none.
+
+#### N4. Other environment observations
+
+- `POST /api/apps` returns 204 on ≤2.41 but **201 on 2.42+** (affects install
+  scripts, not the app).
+- The `lao_hmis_demo_v41` seed ships with the `admin` account **disabled** —
+  re-enabled at DB level for testing (`userinfo.disabled`, password reset).
 
 ## Claims investigated and rejected
 

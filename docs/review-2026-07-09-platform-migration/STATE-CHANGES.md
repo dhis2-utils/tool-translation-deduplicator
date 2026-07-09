@@ -16,10 +16,22 @@ Every persistent change made during this review, and its disposition.
 |---|---|---|---|
 | `agent-td40` | 2.40.12 | sierra-leone V40 | deleted after testing |
 | `agent-td41` | 2.41.9 | sierra-leone v41 | deleted after testing |
-| `agent-td42` | 2.42.x | sierra-leone v42 | deleted after testing |
-| `agent-td43` | 2.43.x | sierra-leone v43 | deleted after testing |
-| `agent-tdlao` | 2.41 → 2.42 → 2.43 (in-place upgrades) | lao_hmis_demo_v41 | deleted after testing |
+| `agent-td42` | 2.42.5.1 | sierra-leone v42 | deleted after testing |
+| `agent-td43` | 2.43.0.1 | sierra-leone v43 | deleted after testing |
+| `agent-tdlao` | 2.41.9 | lao_hmis_demo_v41 | deleted after testing (see note) |
+| `agent-tdlao42` | 2.42.5.1 | lao_hmis_demo_v41 (Flyway-migrated) | deleted after testing |
+| `agent-tdlao43` | 2.43.x | lao_hmis_demo_v41 (Flyway-migrated) | deleted after testing |
 | `agent-la-dev` | (pre-existing, not created by this review) | — | **left untouched** |
+
+Note: an in-place WAR upgrade of `agent-tdlao` 2.41→2.42 left the instance
+broken (created-at-41 instances run Tomcat 9; DHIS2 2.42+ needs Tomcat 10, so
+the new WAR never deployed — everything 404s). Fresh per-version instances
+with the v41 seed were used instead; Flyway migrated the DB on first boot.
+
+The `lao_hmis_demo_v41` seed ships with the `admin` account disabled; on each
+Laos instance it was re-enabled with password `district` directly in the DB
+(`tests/e2e/prep_lao_admin.sh`) before testing. Instances were deleted after,
+so nothing persists.
 
 ## Test data created
 

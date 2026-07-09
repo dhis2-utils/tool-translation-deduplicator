@@ -24,8 +24,9 @@ curl -s -u admin:district "$BASE/api/system/info" | python3 -c "import json,sys;
 
 echo "== installing app"
 curl -s -u admin:district -X DELETE -o /dev/null "$BASE/api/apps/tool-translation-deduplicator" || true
+# 204 on <=2.41, 201 on 2.42+
 code=$(curl -s -u admin:district -F "file=@$ZIP" -o /dev/null -w '%{http_code}' "$BASE/api/apps")
-[ "$code" = "204" ] || { echo "app install failed: $code"; exit 1; }
+case "$code" in 2*) ;; *) echo "app install failed: $code"; exit 1;; esac
 
 echo "== seeding duplicates"
 DHIS2_URL="$BASE" DHIS2_USER=admin DHIS2_PASS=district DHIS2_DB_HOST="$HOST-db" \
