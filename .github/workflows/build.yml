@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
 
     steps:
     - uses: actions/checkout@v4
@@ -26,13 +26,17 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
     - name: Install jq
       run: sudo apt-get install -y jq
 
     - name: Build
       run: |
-        yarn install
-        yarn run zip
+        pnpm install --frozen-lockfile
+        pnpm test
+        pnpm build
 
     - name: Get version
       id: version
@@ -58,7 +62,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: "./compiled/${{ env.app_name }}.zip"
+        asset_path: "./build/bundle/${{ env.app_name }}-${{ env.version }}.zip"
         asset_name: "${{ env.app_name }}.zip"
         asset_content_type: application/zip
       env:

@@ -1,5 +1,6 @@
 .history
 .tmp
+.d2
 compiled
 build
 manifest.webapp
@@ -7,3 +8,6 @@ node_modules
 .vscode
 bin
 d2auth.json
+.DS_Store
+src/locales
+tests/e2e/output

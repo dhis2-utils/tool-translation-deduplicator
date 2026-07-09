@@ -1,0 +1,193 @@
+import i18n from '@dhis2/d2-i18n'
+import {
+    Button,
+    ButtonStrip,
+    CircularLoader,
+    LinearLoader,
+    NoticeBox,
+} from '@dhis2/ui'
+import React, { useCallback, useState } from 'react'
+import { DuplicatesTable } from '../components/DuplicatesTable'
+import { useDuplicateScan } from '../hooks/useDuplicateScan'
+import { FixSelection, useFixDuplicates } from '../hooks/useFixDuplicates'
+import { duplicateGroupKey } from '../lib/translationTypes'
+import styles from './DuplicatesPage.module.css'
+
+export const DuplicatesPage = () => {
+    const { state, rescan, removeDuplicates } = useDuplicateScan()
+    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set())
+    const [chosenValues, setChosenValues] = useState<Map<string, number>>(
+        new Map()
+    )
+
+    const { fixDuplicates, isFixing } = useFixDuplicates({
+        onComplete: (result) => {
+            removeDuplicates(result.fixedKeys)
+            setSelectedKeys(
+                (previous) =>
+                    new Set(
+                        [...previous].filter(
+                            (key) => !result.fixedKeys.has(key)
+                        )
+                    )
+            )
+        },
+    })
+
+    const handleToggleRow = useCallback((rowKey: string) => {
+        setSelectedKeys((previous) => {
+            const next = new Set(previous)
+            if (next.has(rowKey)) {
+                next.delete(rowKey)
+            } else {
+                next.add(rowKey)
+            }
+            return next
+        })
+    }, [])
+
+    const handleToggleAll = useCallback(
+        (select: boolean) => {
+            setSelectedKeys(
+                select
+                    ? new Set(state.duplicates.map(duplicateGroupKey))
+                    : new Set()
+            )
+        },
+        [state.duplicates]
+    )
+
+    const handleChooseValue = useCallback(
+        (rowKey: string, valueIndex: number) => {
+            setChosenValues((previous) =>
+                new Map(previous).set(rowKey, valueIndex)
+            )
+        },
+        []
+    )
+
+    const handleFix = () => {
+        const selections: FixSelection[] = state.duplicates
+            .filter((group) => selectedKeys.has(duplicateGroupKey(group)))
+            .map((group) => ({
+                group,
+                selectedValue:
+                    group.values[
+                        chosenValues.get(duplicateGroupKey(group)) ?? 0
+                    ],
+            }))
+        fixDuplicates(selections)
+    }
+
+    const handleRescan = () => {
+        setSelectedKeys(new Set())
+        setChosenValues(new Map())
+        rescan()
+    }
+
+    if (state.status === 'loading-schemas') {
+        return (
+            <div className={styles.centered}>
+                <CircularLoader aria-label={i18n.t('Loading')} />
+            </div>
+        )
+    }
+
+    if (state.status === 'error') {
+        return (
+            <div className={styles.container}>
+                <NoticeBox error title={i18n.t('Failed to load metadata')}>
+                    {state.error?.message ??
+                        i18n.t('An unknown error occurred')}
+                </NoticeBox>
+            </div>
+        )
+    }
+
+    if (state.status === 'scanning') {
+        return (
+            <div className={styles.centered} data-test="scan-progress">
+                <p>{i18n.t('Scanning metadata for duplicate translations…')}</p>
+                <LinearLoader
+                    amount={state.progress}
+                    width="400px"
+                    aria-label={i18n.t('Scan progress')}
+                />
+            </div>
+        )
+    }
+
+    return (
+        <div className={styles.container}>
+            <h1 className={styles.title}>{i18n.t('Duplicate translations')}</h1>
+            {state.failedTypes.length > 0 && (
+                <NoticeBox
+                    warning
+                    className={styles.notice}
+                    title={i18n.t('Some object types could not be checked')}
+                >
+                    {i18n.t(
+                        'The following types were skipped (no access or an error occurred): {{types}}',
+                        {
+                            types: state.failedTypes.join(', '),
+                            nsSeparator: '###',
+                        }
+                    )}
+                </NoticeBox>
+            )}
+            {state.duplicates.length === 0 ? (
+                <>
+                    <NoticeBox
+                        valid
+                        className={styles.notice}
+                        title={i18n.t('No duplicate translations found')}
+                    >
+                        {i18n.t(
+                            'All checked metadata has at most one translation per locale and property.'
+                        )}
+                    </NoticeBox>
+                    <ButtonStrip>
+                        <Button onClick={handleRescan} dataTest="rescan-button">
+                            {i18n.t('Rescan')}
+                        </Button>
+                    </ButtonStrip>
+                </>
+            ) : (
+                <>
+                    <div className={styles.toolbar}>
+                        <ButtonStrip>
+                            <Button
+                                primary
+                                loading={isFixing}
+                                disabled={selectedKeys.size === 0 || isFixing}
+                                onClick={handleFix}
+                                dataTest="fix-selected-button"
+                            >
+                                {i18n.t('Fix selected ({{count}})', {
+                                    count: selectedKeys.size,
+                                    nsSeparator: '###',
+                                })}
+                            </Button>
+                            <Button
+                                onClick={handleRescan}
+                                disabled={isFixing}
+                                dataTest="rescan-button"
+                            >
+                                {i18n.t('Rescan')}
+                            </Button>
+                        </ButtonStrip>
+                    </div>
+                    <DuplicatesTable
+                        duplicates={state.duplicates}
+                        selectedKeys={selectedKeys}
+                        chosenValues={chosenValues}
+                        disabled={isFixing}
+                        onToggleRow={handleToggleRow}
+                        onToggleAll={handleToggleAll}
+                        onChooseValue={handleChooseValue}
+                    />
+                </>
+            )}
+        </div>
+    )
+}

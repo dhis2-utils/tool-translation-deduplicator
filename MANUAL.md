@@ -49,13 +49,13 @@ The Translation Duplicator Tool provides a user-friendly interface to detect and
    - Each row corresponds to a duplicate entry for a translation.
 
 4. **Table Columns**:
-   - **Select**: Checkbox to select individual rows for fixing.
+   - **Select**: Checkbox to select individual rows for fixing. Each row is one locale/property pair with duplicate translations, and can be fixed independently.
    - **Object Type**: Type of DHIS2 object (e.g., data element, organization unit).
    - **ID**: Unique identifier of the object.
    - **Name**: Name of the object.
    - **Locale**: Language locale for the translation.
    - **Property**: The property of the object being translated (e.g., name, description).
-   - **Translations**: List of duplicate translations with radio buttons to select the preferred translation to keep
+   - **Translation to keep**: List of duplicate translations with radio buttons to select the preferred translation to keep
 
 5. **Select All/Deselect All**:
    - At the top left of the table, there is a "Select All" checkbox.
@@ -63,9 +63,10 @@ The Translation Duplicator Tool provides a user-friendly interface to detect and
    - Unchecking it will deselect all rows.
 
 6. **Fix Selected Translations**:
-   - After reviewing the duplicates and selecting rows to fix, click the "Fix Selected" button located below the table.
+   - After reviewing the duplicates and selecting rows to fix, click the "Fix selected" button located above the table.
    - The app will process the selected rows and update translations to remove duplicates.
    - A notification will inform you of the success or failure of the operation.
+   - Use the "Rescan" button to re-check the instance at any time.
 
 7. **Feedback**:
    - Success and failure messages will be displayed
