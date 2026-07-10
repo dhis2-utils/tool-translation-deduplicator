@@ -18,6 +18,11 @@
     margin-block-end: var(--spacers-dp16);
 }
 
+.errorList {
+    margin: 0;
+    padding-inline-start: var(--spacers-dp16);
+}
+
 .centered {
     display: flex;
     flex-direction: column;

@@ -49,7 +49,7 @@ The Translation Duplicator Tool provides a user-friendly interface to detect and
    - Each row corresponds to a duplicate entry for a translation.
 
 4. **Table Columns**:
-   - **Select**: Checkbox to select individual rows for fixing. Each row is one locale/property pair with duplicate translations, and can be fixed independently.
+   - **Select**: Checkbox to select an object for fixing. If an object has duplicates for several locale/property pairs, they are selected and fixed together — DHIS2 only accepts an update when all of an object's duplicates are resolved at once.
    - **Object Type**: Type of DHIS2 object (e.g., data element, organization unit).
    - **ID**: Unique identifier of the object.
    - **Name**: Name of the object.

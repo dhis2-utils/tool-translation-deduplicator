@@ -14,15 +14,42 @@ export interface FixSelection {
     selectedValue: string
 }
 
+export interface FailedObject {
+    objectId: string
+    objectName: string
+    message: string
+}
+
 export interface FixResult {
     fixedKeys: Set<string>
     failedKeys: Set<string>
-    failedObjects: { objectId: string; message: string }[]
+    failedObjects: FailedObject[]
 }
 
 interface OwnedObject {
     translations?: Translation[]
     [property: string]: unknown
+}
+
+/**
+ * Pull the human-readable validation messages (e.g. E1106) out of an
+ * app-runtime FetchError; fall back to the generic error message.
+ */
+const extractErrorMessage = (error: unknown): string => {
+    const details = (
+        error as {
+            details?: {
+                response?: { errorReports?: { message?: string }[] }
+            }
+        }
+    ).details
+    const reports = details?.response?.errorReports
+        ?.map((report) => report.message)
+        .filter(Boolean)
+    if (reports?.length) {
+        return reports.join('; ')
+    }
+    return error instanceof Error ? error.message : String(error)
 }
 
 /**
@@ -120,10 +147,8 @@ export const useFixDuplicates = ({
                     }
                     result.failedObjects.push({
                         objectId,
-                        message:
-                            error instanceof Error
-                                ? error.message
-                                : String(error),
+                        objectName: objectSelections[0].group.objectName,
+                        message: extractErrorMessage(error),
                     })
                 }
             }

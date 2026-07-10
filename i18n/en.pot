@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-07-09T20:12:18.942Z\n"
-"PO-Revision-Date: 2026-07-09T20:12:18.942Z\n"
+"POT-Creation-Date: 2026-07-10T05:08:15.404Z\n"
+"PO-Revision-Date: 2026-07-10T05:08:15.404Z\n"
 
 msgid "Object type"
 msgstr "Object type"
@@ -49,6 +49,9 @@ msgstr "Scan progress"
 
 msgid "Duplicate translations"
 msgstr "Duplicate translations"
+
+msgid "Some updates failed"
+msgstr "Some updates failed"
 
 msgid "Some object types could not be checked"
 msgstr "Some object types could not be checked"

@@ -19,9 +19,28 @@ interface DuplicatesTableProps {
     /** rowKey -> index of the chosen value within group.values (default 0) */
     chosenValues: Map<string, number>
     disabled: boolean
-    onToggleRow: (rowKey: string) => void
+    /** Toggles selection of the row's whole object (all its duplicate rows) */
+    onToggleRow: (group: DuplicateGroup) => void
     onToggleAll: (select: boolean) => void
     onChooseValue: (rowKey: string, valueIndex: number) => void
+}
+
+/** Group adjacent rows belonging to the same object, preserving order. */
+const groupByObject = (duplicates: DuplicateGroup[]): DuplicateGroup[][] => {
+    const groups: DuplicateGroup[][] = []
+    for (const duplicate of duplicates) {
+        const current = groups[groups.length - 1]
+        if (
+            current &&
+            current[0].objectType === duplicate.objectType &&
+            current[0].objectId === duplicate.objectId
+        ) {
+            current.push(duplicate)
+        } else {
+            groups.push([duplicate])
+        }
+    }
+    return groups
 }
 
 export const DuplicatesTable = ({
@@ -72,50 +91,68 @@ export const DuplicatesTable = ({
                 </DataTableRow>
             </DataTableHead>
             <DataTableBody>
-                {duplicates.map((group) => {
-                    const rowKey = duplicateGroupKey(group)
-                    const chosenIndex = chosenValues.get(rowKey) ?? 0
-                    return (
-                        <DataTableRow
-                            key={rowKey}
-                            selected={selectedKeys.has(rowKey)}
-                            dataTest="duplicate-row"
-                        >
-                            <DataTableCell>
-                                <Checkbox
-                                    dataTest="row-checkbox"
-                                    checked={selectedKeys.has(rowKey)}
-                                    disabled={disabled}
-                                    onChange={() => onToggleRow(rowKey)}
-                                />
-                            </DataTableCell>
-                            <DataTableCell>{group.objectType}</DataTableCell>
-                            <DataTableCell>{group.objectId}</DataTableCell>
-                            <DataTableCell>{group.objectName}</DataTableCell>
-                            <DataTableCell>{group.locale}</DataTableCell>
-                            <DataTableCell>{group.property}</DataTableCell>
-                            <DataTableCell>
-                                <div className={styles.valueList}>
-                                    {group.values.map((value, index) => (
-                                        <Radio
-                                            // Values may be identical strings,
-                                            // so the index is part of the key
-                                            key={`${index}-${value}`}
-                                            dense
-                                            name={rowKey}
-                                            label={value}
-                                            checked={chosenIndex === index}
-                                            disabled={disabled}
-                                            onChange={() =>
-                                                onChooseValue(rowKey, index)
-                                            }
-                                        />
-                                    ))}
-                                </div>
-                            </DataTableCell>
-                        </DataTableRow>
-                    )
-                })}
+                {groupByObject(duplicates).map((objectRows) =>
+                    objectRows.map((group, indexInObject) => {
+                        const rowKey = duplicateGroupKey(group)
+                        const chosenIndex = chosenValues.get(rowKey) ?? 0
+                        const rowSpan = String(objectRows.length)
+                        return (
+                            <DataTableRow
+                                key={rowKey}
+                                selected={selectedKeys.has(rowKey)}
+                                dataTest={`duplicate-row-${group.objectId}-${group.locale}-${group.property}`}
+                            >
+                                {indexInObject === 0 && (
+                                    <>
+                                        <DataTableCell rowSpan={rowSpan}>
+                                            <Checkbox
+                                                dataTest="row-checkbox"
+                                                checked={selectedKeys.has(
+                                                    rowKey
+                                                )}
+                                                disabled={disabled}
+                                                onChange={() =>
+                                                    onToggleRow(group)
+                                                }
+                                            />
+                                        </DataTableCell>
+                                        <DataTableCell rowSpan={rowSpan}>
+                                            {group.objectType}
+                                        </DataTableCell>
+                                        <DataTableCell rowSpan={rowSpan}>
+                                            {group.objectId}
+                                        </DataTableCell>
+                                        <DataTableCell rowSpan={rowSpan}>
+                                            {group.objectName}
+                                        </DataTableCell>
+                                    </>
+                                )}
+                                <DataTableCell>{group.locale}</DataTableCell>
+                                <DataTableCell>{group.property}</DataTableCell>
+                                <DataTableCell>
+                                    <div className={styles.valueList}>
+                                        {group.values.map((value, index) => (
+                                            <Radio
+                                                // Values may be identical
+                                                // strings, so the index is
+                                                // part of the key
+                                                key={`${index}-${value}`}
+                                                dense
+                                                name={rowKey}
+                                                label={value}
+                                                checked={chosenIndex === index}
+                                                disabled={disabled}
+                                                onChange={() =>
+                                                    onChooseValue(rowKey, index)
+                                                }
+                                            />
+                                        ))}
+                                    </div>
+                                </DataTableCell>
+                            </DataTableRow>
+                        )
+                    })
+                )}
             </DataTableBody>
         </DataTable>
     )

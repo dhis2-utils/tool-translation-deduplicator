@@ -143,16 +143,17 @@ def main():
         page.screenshot(path=str(OUT / "02-scan-done.png"), full_page=True)
 
         # --- Step 3: all seeded duplicates are listed
-        rows = frame.locator("[data-test='duplicate-row']")
+        def row_sel(obj_id, locale, prop):
+            return f"[data-test='duplicate-row-{obj_id}-{locale}-{prop}']"
+
+        rows = frame.locator("[data-test^='duplicate-row-']")
         row_count = rows.count()
         missing = []
         for obj in seeded:
             for dup in obj["duplicates"]:
-                sel = frame.locator(
-                    "[data-test='duplicate-row']",
-                    has_text=obj["id"],
-                ).filter(has_text=dup["property"])
-                if not sel.count():
+                if not frame.locator(
+                    row_sel(obj["id"], dup["locale"], dup["property"])
+                ).count():
                     missing.append(f"{obj['id']}/{dup['locale']}/{dup['property']}")
         if missing:
             record("seeded duplicates listed", "FAIL", f"missing: {missing}")
@@ -169,8 +170,8 @@ def main():
         )
         keep_value = name_dup["values"][1]  # choose the non-default option
         target_row = frame.locator(
-            "[data-test='duplicate-row']", has_text=target["id"]
-        ).filter(has_text="NAME").first
+            row_sel(target["id"], name_dup["locale"], "NAME")
+        )
         try:
             target_row.get_by_role("radio").nth(1).check(force=True)
             record("choose non-default translation", "PASS", keep_value)
@@ -178,17 +179,56 @@ def main():
             record("choose non-default translation", "FAIL", str(e))
         page.screenshot(path=str(OUT / "03-radio.png"), full_page=True)
 
-        # --- Step 5: select all rows and fix
+        # --- Step 4b: selecting one row selects its whole object
+        # (objects can only be fixed atomically — E1106), and fixing a
+        # single multi-pair object succeeds with no failures.
+        target_pairs = len(target["duplicates"])
+        frame.locator(
+            f"[data-test^='duplicate-row-{target['id']}-'] "
+            "[data-test='row-checkbox'] input"
+        ).first.check(force=True)
+        button_label = frame.locator(
+            "[data-test='fix-selected-button']"
+        ).inner_text()
+        if f"({target_pairs})" in button_label:
+            record("partial selection selects whole object", "PASS",
+                   button_label)
+        else:
+            record("partial selection selects whole object", "FAIL",
+                   f"expected ({target_pairs}) in {button_label!r}")
+        frame.locator("[data-test='fix-selected-button']").click()
+        alert = frame.locator("[data-test='dhis2-uicore-alertbar']")
+        try:
+            alert.first.wait_for(timeout=120000)
+            alert_text = alert.first.inner_text()
+            no_error_notice = not frame.locator(
+                "[data-test='fix-errors-notice']"
+            ).count()
+            target_rows_gone = not frame.locator(
+                f"[data-test^='duplicate-row-{target['id']}-']"
+            ).count()
+            ok = "failed" not in alert_text and no_error_notice and target_rows_gone
+            record("fix single multi-pair object", "PASS" if ok else "FAIL",
+                   f"alert: {alert_text!r}, rows gone: {target_rows_gone}")
+            alert.first.wait_for(state="detached", timeout=30000)
+        except Exception as e:
+            page.screenshot(path=str(OUT / "04b-partial-FAIL.png"), full_page=True)
+            record("fix single multi-pair object", "FAIL", str(e))
+        page.screenshot(path=str(OUT / "04b-partial-fixed.png"), full_page=True)
+        row_count = frame.locator("[data-test^='duplicate-row-']").count()
+
+        # --- Step 5: select all remaining rows and fix
         frame.locator("[data-test='select-all-checkbox'] input").check(
             force=True
         )
+        checkboxes = frame.locator("[data-test='row-checkbox'] input").count()
         checked = frame.locator(
             "[data-test='row-checkbox'] input:checked"
         ).count()
-        if checked == row_count:
-            record("select all", "PASS", f"{checked}/{row_count}")
+        if checked == checkboxes:
+            record("select all", "PASS", f"{checked}/{checkboxes} objects")
         else:
-            record("select all", "FAIL", f"{checked}/{row_count}")
+            record("select all", "FAIL", f"{checked}/{checkboxes} objects")
         page.screenshot(path=str(OUT / "04-selected.png"), full_page=True)
 
         frame.locator("[data-test='fix-selected-button']").click()
@@ -200,7 +240,7 @@ def main():
             alert = frame.locator("[data-test='dhis2-uicore-alertbar']")
             alert.first.wait_for(timeout=fix_timeout)
             alert_text = alert.first.inner_text()
-            leftover = frame.locator("[data-test='duplicate-row']").count()
+            leftover = frame.locator("[data-test^='duplicate-row-']").count()
             record(
                 "fix selected completes", "PASS",
                 f"alert: {alert_text!r}, rows remaining: {leftover}",
@@ -258,10 +298,10 @@ def main():
             still_listed = [
                 obj["id"] for obj in seeded
                 if frame.locator(
-                    "[data-test='duplicate-row']", has_text=obj["id"]
+                    f"[data-test^='duplicate-row-{obj['id']}-']"
                 ).count()
             ]
-            leftover = frame.locator("[data-test='duplicate-row']").count()
+            leftover = frame.locator("[data-test^='duplicate-row-']").count()
             if still_listed:
                 record(
                     "rescan: seeded duplicates gone", "FAIL",

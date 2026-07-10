@@ -31,6 +31,22 @@ All findings below were **fixed during this engagement** unless marked open.
   filtered array is referentially stable (commit `c03acb9`). Verified live:
   84 requests total, scan completes.
 
+#### H2. Fixing a subset of an object's duplicate rows always failed (fixed — found by user manual testing, 2026-07-10)
+
+- **Where**: `src/pages/DuplicatesPage.tsx` / `src/hooks/useFixDuplicates.ts`
+- **What**: the migrated app initially allowed selecting duplicate rows
+  individually. But the fix rewrites the *whole object*, and the server
+  rejects any object still containing a duplicate pair (E1106) — so fixing
+  one of an object's rows while leaving a sibling row unselected produced a
+  doomed PUT ("Fixed 2 issue(s), 1 update(s) failed", with no indication of
+  which object or why). The e2e suite always selected all rows and missed it.
+- **Fix**: selection now operates per object (all of an object's duplicate
+  rows toggle together, shown with grouped/rowspan cells like v0.2.0), and
+  failed updates are listed per object with the server's error message in an
+  error notice. Regression step added to the e2e suite (select one row of a
+  two-pair object → both selected → fix succeeds with no failures). Verified
+  on a fresh 2.43 instance: 10/10 steps.
+
 ### MEDIUM
 
 #### M1. App translations were never registered (fixed)
@@ -183,9 +199,10 @@ the source of real quirks (silent skips, no error surfacing). The app remains
 a single-view tool: no sidebar; react-router is included per platform
 convention (hash router + global-shell URL sync) with a single route.
 
-One deliberate behavior change: selection is now **per duplicate row**
-(locale/property pair) instead of per object. Finer-grained, and the fix
-logic still groups rows of the same object into a single PUT.
+A per-row selection model was initially attempted but reverted after finding
+H2: the server only accepts an object update once *all* of its duplicate
+pairs are resolved, so selection is per object (as in v0.2.0), with the value
+choice still made per locale/property row.
 
 ## Environment gaps
 

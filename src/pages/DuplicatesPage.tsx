@@ -9,8 +9,12 @@ import {
 import React, { useCallback, useState } from 'react'
 import { DuplicatesTable } from '../components/DuplicatesTable'
 import { useDuplicateScan } from '../hooks/useDuplicateScan'
-import { FixSelection, useFixDuplicates } from '../hooks/useFixDuplicates'
-import { duplicateGroupKey } from '../lib/translationTypes'
+import {
+    FailedObject,
+    FixSelection,
+    useFixDuplicates,
+} from '../hooks/useFixDuplicates'
+import { DuplicateGroup, duplicateGroupKey } from '../lib/translationTypes'
 import styles from './DuplicatesPage.module.css'
 
 export const DuplicatesPage = () => {
@@ -19,6 +23,7 @@ export const DuplicatesPage = () => {
     const [chosenValues, setChosenValues] = useState<Map<string, number>>(
         new Map()
     )
+    const [fixErrors, setFixErrors] = useState<FailedObject[]>([])
 
     const { fixDuplicates, isFixing } = useFixDuplicates({
         onComplete: (result) => {
@@ -31,20 +36,38 @@ export const DuplicatesPage = () => {
                         )
                     )
             )
+            setFixErrors(result.failedObjects)
         },
     })
 
-    const handleToggleRow = useCallback((rowKey: string) => {
-        setSelectedKeys((previous) => {
-            const next = new Set(previous)
-            if (next.has(rowKey)) {
-                next.delete(rowKey)
-            } else {
-                next.add(rowKey)
-            }
-            return next
-        })
-    }, [])
+    // Selection operates on whole objects: the fix rewrites the full
+    // object, and the server rejects any object that still contains a
+    // duplicate pair (E1106) — so an object's duplicate rows can only be
+    // fixed together.
+    const handleToggleRow = useCallback(
+        (group: DuplicateGroup) => {
+            const siblingKeys = state.duplicates
+                .filter(
+                    (d) =>
+                        d.objectType === group.objectType &&
+                        d.objectId === group.objectId
+                )
+                .map(duplicateGroupKey)
+            const isSelected = selectedKeys.has(duplicateGroupKey(group))
+            setSelectedKeys((previous) => {
+                const next = new Set(previous)
+                for (const key of siblingKeys) {
+                    if (isSelected) {
+                        next.delete(key)
+                    } else {
+                        next.add(key)
+                    }
+                }
+                return next
+            })
+        },
+        [state.duplicates, selectedKeys]
+    )
 
     const handleToggleAll = useCallback(
         (select: boolean) => {
@@ -76,12 +99,14 @@ export const DuplicatesPage = () => {
                         chosenValues.get(duplicateGroupKey(group)) ?? 0
                     ],
             }))
+        setFixErrors([])
         fixDuplicates(selections)
     }
 
     const handleRescan = () => {
         setSelectedKeys(new Set())
         setChosenValues(new Map())
+        setFixErrors([])
         rescan()
     }
 
@@ -120,6 +145,23 @@ export const DuplicatesPage = () => {
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>{i18n.t('Duplicate translations')}</h1>
+            {fixErrors.length > 0 && (
+                <NoticeBox
+                    error
+                    className={styles.notice}
+                    title={i18n.t('Some updates failed')}
+                    dataTest="fix-errors-notice"
+                >
+                    <ul className={styles.errorList}>
+                        {fixErrors.map((failure) => (
+                            <li key={failure.objectId}>
+                                {failure.objectName} ({failure.objectId}) —{' '}
+                                {failure.message}
+                            </li>
+                        ))}
+                    </ul>
+                </NoticeBox>
+            )}
             {state.failedTypes.length > 0 && (
                 <NoticeBox
                     warning
