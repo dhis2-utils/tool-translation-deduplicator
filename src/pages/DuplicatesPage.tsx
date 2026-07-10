@@ -14,7 +14,11 @@ import {
     FixSelection,
     useFixDuplicates,
 } from '../hooks/useFixDuplicates'
-import { DuplicateGroup, duplicateGroupKey } from '../lib/translationTypes'
+import {
+    DuplicateGroup,
+    duplicateGroupKey,
+    UNFIXABLE_TYPES,
+} from '../lib/translationTypes'
 import styles from './DuplicatesPage.module.css'
 
 export const DuplicatesPage = () => {
@@ -73,7 +77,14 @@ export const DuplicatesPage = () => {
         (select: boolean) => {
             setSelectedKeys(
                 select
-                    ? new Set(state.duplicates.map(duplicateGroupKey))
+                    ? new Set(
+                          state.duplicates
+                              .filter(
+                                  (group) =>
+                                      !UNFIXABLE_TYPES.has(group.objectType)
+                              )
+                              .map(duplicateGroupKey)
+                      )
                     : new Set()
             )
         },

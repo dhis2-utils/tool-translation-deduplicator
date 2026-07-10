@@ -72,6 +72,9 @@ The Translation Duplicator Tool provides a user-friendly interface to detect and
    - Success and failure messages will be displayed
    - The table will refresh to reflect updated translations
 
+7. **Types that cannot be fixed via the API**:
+   - Some object types (currently maps and category option combos) cannot be updated through the DHIS2 API — the server either rejects the update or silently ignores it. Duplicates on these types are listed with a "Cannot be fixed via API" tag and cannot be selected; resolving them requires database-level cleanup.
+
 ## Warnings
 1. **Use in Development/Test Environment**:
    - It is recommended to use and test this app in a **development or test environment**. This will prevent unintended modifications in the production environment.

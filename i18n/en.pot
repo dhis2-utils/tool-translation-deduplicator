@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-07-10T05:08:15.404Z\n"
-"PO-Revision-Date: 2026-07-10T05:08:15.404Z\n"
+"POT-Creation-Date: 2026-07-10T05:31:02.688Z\n"
+"PO-Revision-Date: 2026-07-10T05:31:02.689Z\n"
 
 msgid "Object type"
 msgstr "Object type"
@@ -25,6 +25,9 @@ msgstr "Property"
 
 msgid "Translation to keep"
 msgstr "Translation to keep"
+
+msgid "Cannot be fixed via API"
+msgstr "Cannot be fixed via API"
 
 msgid "Fixed {{fixed}} duplicate translation issue(s)"
 msgstr "Fixed {{fixed}} duplicate translation issue(s)"

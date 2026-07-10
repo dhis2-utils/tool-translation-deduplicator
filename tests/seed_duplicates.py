@@ -50,7 +50,7 @@ def api(method, path, body=None):
         return json.loads(raw) if raw else {}
 
 
-# (collection, table, how many objects, duplicate specs)
+# (collection, table, how many objects, duplicate specs, fixable-via-API)
 # Each spec: (locale, property, [values...]).
 SEED_PLAN = [
     # NOTE: fully identical duplicate records (same locale+property+value)
@@ -59,13 +59,18 @@ SEED_PLAN = [
     ("dataElements", "dataelement", 2, [
         ("fr", "NAME", ["Doublon A", "Doublon B"]),
         ("fr", "SHORT_NAME", ["Abrégé A", "Abrégé B"]),
-    ]),
+    ], True),
     ("indicators", "indicator", 1, [
         ("fr", "NAME", ["Indicateur X", "Indicateur Y"]),
-    ]),
+    ], True),
     ("organisationUnits", "organisationunit", 1, [
         ("fr", "NAME", ["Unité 1", "Unité 2"]),
-    ]),
+    ], True),
+    # The server silently ignores categoryOptionCombo updates — the app
+    # must flag these as not fixable via the API.
+    ("categoryOptionCombos", "categoryoptioncombo", 1, [
+        ("fr", "NAME", ["Combo A", "Combo B"]),
+    ], False),
 ]
 
 
@@ -81,7 +86,7 @@ def main():
         DB_USER, host=DB_HOST, port=DB_PORT, database=DB_NAME, password=DB_PASS
     )
 
-    for collection, table, count, specs in SEED_PLAN:
+    for collection, table, count, specs, fixable in SEED_PLAN:
         listing = api(
             "GET",
             f"{collection}?fields=id,displayName&order=id:asc&pageSize={count}",
@@ -117,6 +122,7 @@ def main():
                 "collection": collection,
                 "id": uid,
                 "name": obj_ref["displayName"],
+                "fixable": fixable,
                 "originalTranslations": original,
                 "duplicates": expected,
             })

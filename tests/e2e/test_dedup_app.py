@@ -163,6 +163,28 @@ def main():
                 f"{row_count} rows total",
             )
 
+        # --- Step 3b: unfixable types are flagged and not selectable
+        unfixable_objs = [o for o in seeded if not o.get("fixable", True)]
+        if unfixable_objs:
+            problems = []
+            for obj in unfixable_objs:
+                obj_rows = f"[data-test^='duplicate-row-{obj['id']}-']"
+                has_checkbox = frame.locator(
+                    f"{obj_rows} [data-test='row-checkbox']"
+                ).count()
+                has_tag = frame.locator(
+                    obj_rows, has_text="Cannot be fixed via API"
+                ).count()
+                if has_checkbox or not has_tag:
+                    problems.append(
+                        f"{obj['id']}: checkbox={has_checkbox}, tag={has_tag}"
+                    )
+            record(
+                "unfixable types flagged, not selectable",
+                "FAIL" if problems else "PASS",
+                "; ".join(problems) or f"{len(unfixable_objs)} object(s)",
+            )
+
         # --- Step 4: pick the second value for the first seeded DE NAME row
         target = seeded[0]
         name_dup = next(
@@ -258,16 +280,21 @@ def main():
                 "GET",
                 f"{obj['collection']}/{obj['id']}?fields=translations",
             ).get("translations", [])
+            # unfixable objects (no checkbox) are never touched, so their
+            # duplicates must still be present
+            expected_count = 1 if obj.get("fixable", True) else None
             for dup in obj["duplicates"]:
                 remaining = [
                     t["value"] for t in stored
                     if t["locale"] == dup["locale"]
                     and t["property"] == dup["property"]
                 ]
-                if len(remaining) != 1:
+                expected = expected_count or len(dup["values"])
+                if len(remaining) != expected:
                     api_failures.append(
                         f"{obj['id']} {dup['locale']}/{dup['property']}: "
-                        f"{len(remaining)} translations remain: {remaining}"
+                        f"{len(remaining)} translations remain "
+                        f"(expected {expected}): {remaining}"
                     )
         # the explicitly chosen value must be the one kept
         stored = api(
@@ -297,7 +324,7 @@ def main():
             ).first.wait_for(timeout=SCAN_TIMEOUT_MS)
             still_listed = [
                 obj["id"] for obj in seeded
-                if frame.locator(
+                if obj.get("fixable", True) and frame.locator(
                     f"[data-test^='duplicate-row-{obj['id']}-']"
                 ).count()
             ]

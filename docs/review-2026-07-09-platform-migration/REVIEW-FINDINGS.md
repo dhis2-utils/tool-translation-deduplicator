@@ -69,7 +69,7 @@ All findings below were **fixed during this engagement** unless marked open.
 - **Fix**: rephrased to avoid `:` in keys and renamed `count` → `selected`
   (commit `c03acb9`). Both strings now extract.
 
-#### M3. `maps` cannot be fixed: PUT round-trip fails with a 409 unique-constraint error (open — server-side limitation, needs an app-side mitigation)
+#### M3. `maps` cannot be fixed: PUT round-trip fails with a 409 unique-constraint error (mitigated 2026-07-10 — flagged in UI)
 
 - **Where**: `src/hooks/useFixDuplicates.ts` (fix flow), observed live on the Laos DB
 - **What**: the GET `fields=:owner` + PUT round-trip is not idempotent for
@@ -78,13 +78,14 @@ All findings below were **fixed during this engagement** unless marked open.
   (uid)=(dvs2LH2UUdo) already exists` (HTTP 409). The app correctly reports
   the row as failed, but retrying can never succeed. The v0.2.0 app had the
   same limitation.
-- **Fix suggestion**: mark object types whose PUT round-trip is known-broken
-  (currently `maps`) in the UI as "cannot be fixed via the API — needs
-  database-level cleanup", or fall back to `json-patch` for the
-  `translations` property only (`[{op:'replace', path:'/translations', ...}]`),
-  which avoids rewriting embedded objects.
+- **Mitigation**: `maps` is in `UNFIXABLE_TYPES`
+  (`src/lib/translationTypes.ts`) — its duplicate rows are listed but tagged
+  "Cannot be fixed via API" (values read-only, no checkbox, excluded from
+  select-all). Database-level cleanup remains the only actual fix; a
+  `json-patch` fallback for the `translations` property is a possible future
+  improvement.
 
-#### M4. `categoryOptionCombos` fixes are silently ignored by the server (open — server-side limitation, needs an app-side mitigation)
+#### M4. `categoryOptionCombos` fixes are silently ignored by the server (mitigated 2026-07-10 — flagged in UI)
 
 - **Where**: `src/hooks/useFixDuplicates.ts` (fix flow), observed live on the Laos DB
 - **What**: `PUT /api/categoryOptionCombos/<uid>` returns a bare
@@ -94,11 +95,10 @@ All findings below were **fixed during this engagement** unless marked open.
   from the table — but a rescan brings it back. Same behavior in v0.2.0.
   Verified: after a "successful" fix, the COC still returns both `fr` NAME
   values (`"5 -14 ans"` / `"5-14 ans"`).
-- **Fix suggestion**: after each PUT, re-read the object's translations and
-  verify the duplicate is gone before reporting success (cheap: one GET per
-  object), and/or special-case `categoryOptionCombos` with a "cannot be fixed
-  via the API" warning. The json-patch fallback from M3 may also work here
-  and is worth testing.
+- **Mitigation**: `categoryOptionCombos` is in `UNFIXABLE_TYPES`
+  (`src/lib/translationTypes.ts`) — same UI treatment as M3, so the app no
+  longer misreports these as fixed. e2e coverage: a seeded COC duplicate must
+  appear flagged, stay unselected, and keep its duplicates untouched.
 
 ### Defects in the pre-migration (v0.2.0) app, resolved by the migration
 
