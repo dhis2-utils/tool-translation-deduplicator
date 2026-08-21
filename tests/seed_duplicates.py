@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Seed duplicate translations into a DHIS2 instance for testing the
-Translation Deduplicator app.
+Translation Deduplication Tool.
 
 Only run against disposable test instances!
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""End-to-end test suite for the Translation Deduplicator app.
+"""End-to-end test suite for the Translation Deduplication Tool.
 
 Runs against a live DHIS2 instance on which the app is installed and
 `tests/seed_duplicates.py` has been run. Verifies the full flow:

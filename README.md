@@ -1,4 +1,4 @@
-# Translation Deduplicator
+# Translation Deduplication Tool
 
 Tool to identify and fix metadata objects with duplicate translations (one object having multiple translations for the same locale and property).
 

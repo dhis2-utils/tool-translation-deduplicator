@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file.
 - fixed: choosing between two identical duplicate values could re-introduce both values on save
 - object types that cannot be checked (e.g. no access) are now reported in the UI instead of being silently skipped
 - added unit tests for the duplicate-detection logic and a Playwright e2e suite
+- the app is now consistently called "Translation Deduplication Tool" (it was "Translation Deduplicator Tool" in the header bar and three other names in the docs)
+- the user manual is updated for this version
 
 ## [0.2.0]
 

@@ -1,6 +1,6 @@
 # End-to-end tests
 
-Playwright-based e2e suite for the Translation Deduplicator app.
+Playwright-based e2e suite for the Translation Deduplication Tool.
 
 **WARNING: the suite mutates metadata (adds and removes translations). Only
 run it against disposable test instances.**
