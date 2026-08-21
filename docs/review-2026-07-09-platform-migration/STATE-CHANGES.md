@@ -4,24 +4,24 @@ Every persistent change made during this review, and its disposition.
 
 ## Project files
 
-| File | Change | Disposition |
-|---|---|---|
-| entire repo | migrated to App Platform on branch `app-platform-migration` | committed (`251529f`, `c03acb9`, …); not pushed (user pushes) |
-| `d2auth.json` | **not touched** (obsolete under the platform; still gitignored) | left in place |
-| `tests/`, `docs/review-2026-07-09-platform-migration/` | new test suite + review artefacts | committed |
+| File                                                   | Change                                                          | Disposition                                                   |
+| ------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------------------- |
+| entire repo                                            | migrated to App Platform on branch `app-platform-migration`     | committed (`251529f`, `c03acb9`, …); not pushed (user pushes) |
+| `d2auth.json`                                          | **not touched** (obsolete under the platform; still gitignored) | left in place                                                 |
+| `tests/`, `docs/review-2026-07-09-platform-migration/` | new test suite + review artefacts                               | committed                                                     |
 
 ## DHIS2 instances (broker)
 
-| Instance | Version | Seed | Disposition |
-|---|---|---|---|
-| `agent-td40` | 2.40.12 | sierra-leone V40 | deleted after testing |
-| `agent-td41` | 2.41.9 | sierra-leone v41 | deleted after testing |
-| `agent-td42` | 2.42.5.1 | sierra-leone v42 | deleted after testing |
-| `agent-td43` | 2.43.0.1 | sierra-leone v43 | deleted after testing |
-| `agent-tdlao` | 2.41.9 | lao_hmis_demo_v41 | deleted after testing (see note) |
-| `agent-tdlao42` | 2.42.5.1 | lao_hmis_demo_v41 (Flyway-migrated) | deleted after testing |
-| `agent-tdlao43` | 2.43.0.1 | lao_hmis_demo_v41 (Flyway-migrated) | deleted after testing |
-| `agent-la-dev` | (pre-existing, not created by this review) | — | **left untouched** |
+| Instance        | Version                                    | Seed                                | Disposition                      |
+| --------------- | ------------------------------------------ | ----------------------------------- | -------------------------------- |
+| `agent-td40`    | 2.40.12                                    | sierra-leone V40                    | deleted after testing            |
+| `agent-td41`    | 2.41.9                                     | sierra-leone v41                    | deleted after testing            |
+| `agent-td42`    | 2.42.5.1                                   | sierra-leone v42                    | deleted after testing            |
+| `agent-td43`    | 2.43.0.1                                   | sierra-leone v43                    | deleted after testing            |
+| `agent-tdlao`   | 2.41.9                                     | lao_hmis_demo_v41                   | deleted after testing (see note) |
+| `agent-tdlao42` | 2.42.5.1                                   | lao_hmis_demo_v41 (Flyway-migrated) | deleted after testing            |
+| `agent-tdlao43` | 2.43.0.1                                   | lao_hmis_demo_v41 (Flyway-migrated) | deleted after testing            |
+| `agent-la-dev`  | (pre-existing, not created by this review) | —                                   | **left untouched**               |
 
 Note: an in-place WAR upgrade of `agent-tdlao` 2.41→2.42 left the instance
 broken (created-at-41 instances run Tomcat 9; DHIS2 2.42+ needs Tomcat 10, so

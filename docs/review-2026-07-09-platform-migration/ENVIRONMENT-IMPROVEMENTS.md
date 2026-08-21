@@ -11,14 +11,14 @@ what happened → what to change. Grouped by where the change belongs.
    (`postgresql-client` was the concrete need, for DB-level test seeding).
    Either allow `ports.ubuntu.com` in `init-firewall.sh` or preinstall the
    usual suspects in the image: `postgresql-client`, `jq`, `zip`.
-   *Workaround that works today: `pip install pg8000 bcrypt` (pure-Python
-   Postgres driver + password hashing) — worth documenting as the fallback.*
+   _Workaround that works today: `pip install pg8000 bcrypt` (pure-Python
+   Postgres driver + password hashing) — worth documenting as the fallback._
 2. **Git identity is not preconfigured** — the first commit failed with
    "Please tell me who you are". Set `user.name`/`user.email` in the image
    or in the global CLAUDE.md (derivable from the user email already
    provided to agents).
 3. **Only one host port is auto-published**, but App Platform dev mode needs
-   two for host-side use (dev server :3000 *and* the auth proxy :8080).
+   two for host-side use (dev server :3000 _and_ the auth proxy :8080).
    Since dev-server-first is now the preferred workflow (see §5.1), consider
    publishing two ports by default, or a documented convention like
    `agent-sandbox start -p 3000:3000 -p 8080:8080` for DHIS2 app work.
@@ -31,7 +31,7 @@ what happened → what to change. Grouped by where the change belongs.
    broker should either swap the Tomcat image on upgrades across that
    boundary (like create already does) or refuse with a clear error.
 2. **Per-seed credential metadata**: the `lao_hmis_demo_v41` seed ships with
-   `admin` *disabled*; discovering that costs a failed-login-cache restart
+   `admin` _disabled_; discovering that costs a failed-login-cache restart
    cycle. `GET /seeds` could carry a `credentials` / `admin_disabled` hint,
    or the restore step could normalize the admin account.
 3. **Instance readiness state**: during boot, `/api/system/info` goes
@@ -57,7 +57,7 @@ what happened → what to change. Grouped by where the change belongs.
 
 ## 4. `dhis2-app-review` skill
 
-1. **Setup-checklist default** *(decision already made — apply it)*: change
+1. **Setup-checklist default** _(decision already made — apply it)_: change
    "App Platform — install the built bundle (preferred default)" to
    dev-server-first for consistency with the development workflow, and add
    an explicit review step "verify the zipped bundle builds, installs
@@ -77,31 +77,31 @@ what happened → what to change. Grouped by where the change belongs.
    section. Reusable implementation: `tests/seed_duplicates.py`.
 5. **Metadata PUT round-trip pitfalls** (bit both the old and new app;
    generic to admin-tool reviews — worth a reference note):
-   - `categoryOptionCombos`: PUT returns bare `200 {"status":"OK"}` but is
-     **silently ignored** — verify-after-write is the only detection.
-   - `maps` (and likely other types with embedded owned objects): GET
-     `:owner` + PUT re-inserts embedded objects → 409 unique-constraint.
-   - E1106 means partial fixes of multi-duplicate objects are impossible —
-     whole-object atomicity is server-enforced.
+    - `categoryOptionCombos`: PUT returns bare `200 {"status":"OK"}` but is
+      **silently ignored** — verify-after-write is the only detection.
+    - `maps` (and likely other types with embedded owned objects): GET
+      `:owner` + PUT re-inserts embedded objects → 409 unique-constraint.
+    - E1106 means partial fixes of multi-duplicate objects are impossible —
+      whole-object atomicity is server-enforced.
 6. **Playwright patterns to add** to `references/playwright-patterns.md`:
-   - Completion signal via `[data-test='dhis2-uicore-alertbar']`; read the
-     text, then wait for `state="detached"` (auto-hide) before the next
-     action, or a stale alert matches the next wait.
-   - Real-data volumes: don't assert "everything fixed" — some rows
-     legitimately remain (server-side limitations); sequential fix flows
-     take minutes for hundreds of objects, so completion timeouts must
-     scale (suite uses a `FIX_TIMEOUT_MS` env var).
-   - Playwright locators can't mix CSS and `text=` engines in one comma
-     selector — use `.or_()`.
+    - Completion signal via `[data-test='dhis2-uicore-alertbar']`; read the
+      text, then wait for `state="detached"` (auto-hide) before the next
+      action, or a stale alert matches the next wait.
+    - Real-data volumes: don't assert "everything fixed" — some rows
+      legitimately remain (server-side limitations); sequential fix flows
+      take minutes for hundreds of objects, so completion timeouts must
+      scale (suite uses a `FIX_TIMEOUT_MS` env var).
+    - Playwright locators can't mix CSS and `text=` engines in one comma
+      selector — use `.or_()`.
 
 ## 5. Global CLAUDE.md (sandbox-wide)
 
-1. *(Decision already made — apply it)* Add a short routing rule: dev server
+1. _(Decision already made — apply it)_ Add a short routing rule: dev server
    with hot reload is the default for running DHIS2 apps for the user, both
    during development and for manual testing; installing the built zip is a
    verification step for reviews/releases, not the serving mechanism.
    Keep it to 3–4 lines; mechanics stay in the skills.
-2. Note that skill edits made *inside* the sandbox don't persist —
+2. Note that skill edits made _inside_ the sandbox don't persist —
    `~/.claude/skills/` is synced from the host, so apply skill changes
    host-side (or sync them back) or they're lost.
 
@@ -136,7 +136,7 @@ what happened → what to change. Grouped by where the change belongs.
 - Broker + per-version seeds + dev-net DB access made 7-configuration
   testing fully self-service; deleting instances per version kept within
   resource limits.
-- The review skill's install-zip path *as a verification step* caught real
+- The review skill's install-zip path _as a verification step_ caught real
   integration facts (global-shell iframe on 2.42+, manifest/icon handling).
 - Basic-auth `GET /api/me` cookie injection for Playwright worked first
   time on every version, as documented.

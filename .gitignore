@@ -5,6 +5,7 @@ compiled
 build
 manifest.webapp
 node_modules
+.pnpm-store
 .vscode
 bin
 d2auth.json

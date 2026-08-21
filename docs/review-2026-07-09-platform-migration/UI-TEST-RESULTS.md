@@ -4,30 +4,30 @@ Tested: 2026-07-09 · App: installed production bundle (`build/bundle/tool-trans
 
 ## Instances
 
-| Label | URL | DHIS2 version | Source |
-|---|---|---|---|
-| 2.40-sl | http://dhis2-agent-td40:8080 | 2.40.12 | broker, seed `dhis2-db-sierra-leone_V40.sql.gz` |
-| 2.41-sl | http://dhis2-agent-td41:8080 | 2.41.9 | broker, seed `dhis2-db-sierra-leone_v41.sql.gz` |
-| 2.42-sl | http://dhis2-agent-td42:8080 | 2.42.5.1 | broker, seed `dhis2-db-sierra-leone_v42.sql.gz` |
-| 2.43-sl | http://dhis2-agent-td43:8080 | 2.43.0.1 | broker, seed `dhis2-db-sierra-leone_v43.sql.gz` |
-| 2.41-lao | http://dhis2-agent-tdlao:8080 | 2.41.9 | broker, seed `lao_hmis_demo_v41.sql.gz` |
-| 2.42-lao | http://dhis2-agent-tdlao42:8080 | 2.42.5.1 | broker, seed `lao_hmis_demo_v41` (Flyway-migrated on boot) |
-| 2.43-lao | http://dhis2-agent-tdlao43:8080 | 2.43.0.1 | broker, seed `lao_hmis_demo_v41` (Flyway-migrated on boot) |
+| Label    | URL                             | DHIS2 version | Source                                                     |
+| -------- | ------------------------------- | ------------- | ---------------------------------------------------------- |
+| 2.40-sl  | http://dhis2-agent-td40:8080    | 2.40.12       | broker, seed `dhis2-db-sierra-leone_V40.sql.gz`            |
+| 2.41-sl  | http://dhis2-agent-td41:8080    | 2.41.9        | broker, seed `dhis2-db-sierra-leone_v41.sql.gz`            |
+| 2.42-sl  | http://dhis2-agent-td42:8080    | 2.42.5.1      | broker, seed `dhis2-db-sierra-leone_v42.sql.gz`            |
+| 2.43-sl  | http://dhis2-agent-td43:8080    | 2.43.0.1      | broker, seed `dhis2-db-sierra-leone_v43.sql.gz`            |
+| 2.41-lao | http://dhis2-agent-tdlao:8080   | 2.41.9        | broker, seed `lao_hmis_demo_v41.sql.gz`                    |
+| 2.42-lao | http://dhis2-agent-tdlao42:8080 | 2.42.5.1      | broker, seed `lao_hmis_demo_v41` (Flyway-migrated on boot) |
+| 2.43-lao | http://dhis2-agent-tdlao43:8080 | 2.43.0.1      | broker, seed `lao_hmis_demo_v41` (Flyway-migrated on boot) |
 
 ## Results
 
 Suite: `tests/e2e/test_dedup_app.py` (Playwright, frame-aware, screenshots per step).
 
-| Step | 2.40-sl | 2.41-sl | 2.42-sl | 2.43-sl | 2.41-lao | 2.42-lao | 2.43-lao |
-|---|---|---|---|---|---|---|---|
-| App loads (in global-shell iframe?) | PASS (top) | PASS (top) | PASS (iframe) | PASS (iframe) | PASS (top) | PASS (iframe) | PASS (iframe) |
-| Scan completes, duplicates found | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
-| Seeded duplicate rows all listed (total rows) | PASS (6) | PASS (6) | PASS (6) | PASS (6) | PASS (11) | PASS (276) | PASS (276) |
-| Choose non-default translation | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
-| Select all | PASS 6/6 | PASS 6/6 | PASS 6/6 | PASS 6/6 | PASS 11/11 | PASS 276/276 | PASS 276/276 |
-| Fix selected completes | PASS | PASS | PASS | PASS | PASS (10 fixed, 1 failed: map) | PASS (275 fixed, 1 failed: map) | PASS (275 fixed, 1 failed: map) |
-| API state after fix (seeded dupes gone, chosen value kept) | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
-| Rescan: seeded duplicates gone | PASS (0 left) | PASS (0 left) | PASS (0 left) | PASS (0 left) | PASS (5 pre-existing remain) | PASS (5 pre-existing remain) | PASS (5 pre-existing remain) |
+| Step                                                       | 2.40-sl       | 2.41-sl       | 2.42-sl       | 2.43-sl       | 2.41-lao                       | 2.42-lao                        | 2.43-lao                        |
+| ---------------------------------------------------------- | ------------- | ------------- | ------------- | ------------- | ------------------------------ | ------------------------------- | ------------------------------- |
+| App loads (in global-shell iframe?)                        | PASS (top)    | PASS (top)    | PASS (iframe) | PASS (iframe) | PASS (top)                     | PASS (iframe)                   | PASS (iframe)                   |
+| Scan completes, duplicates found                           | PASS          | PASS          | PASS          | PASS          | PASS                           | PASS                            | PASS                            |
+| Seeded duplicate rows all listed (total rows)              | PASS (6)      | PASS (6)      | PASS (6)      | PASS (6)      | PASS (11)                      | PASS (276)                      | PASS (276)                      |
+| Choose non-default translation                             | PASS          | PASS          | PASS          | PASS          | PASS                           | PASS                            | PASS                            |
+| Select all                                                 | PASS 6/6      | PASS 6/6      | PASS 6/6      | PASS 6/6      | PASS 11/11                     | PASS 276/276                    | PASS 276/276                    |
+| Fix selected completes                                     | PASS          | PASS          | PASS          | PASS          | PASS (10 fixed, 1 failed: map) | PASS (275 fixed, 1 failed: map) | PASS (275 fixed, 1 failed: map) |
+| API state after fix (seeded dupes gone, chosen value kept) | PASS          | PASS          | PASS          | PASS          | PASS                           | PASS                            | PASS                            |
+| Rescan: seeded duplicates gone                             | PASS (0 left) | PASS (0 left) | PASS (0 left) | PASS (0 left) | PASS (5 pre-existing remain)   | PASS (5 pre-existing remain)    | PASS (5 pre-existing remain)    |
 
 The 2.41-lao numbers come from the final clean run; two earlier runs on that
 instance surfaced the suite-hardening needs (fix-duration timeout) and

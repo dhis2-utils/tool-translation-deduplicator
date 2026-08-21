@@ -8,7 +8,7 @@ DHIS2 versions tested: 2.40.12, 2.41.9, 2.42.5.1, 2.43.0.1 (see UI-TEST-RESULTS.
 The app was migrated from the vanilla webpack/materialize tool-template to the
 DHIS2 App Platform (React 18 + TypeScript + `@dhis2/app-runtime` + `@dhis2/ui`)
 on branch `app-platform-migration`. Two serious defects were found and fixed
-*during* the review of the migrated code (one would have flooded the server
+_during_ the review of the migrated code (one would have flooded the server
 with requests; both were caught before any release). The final build passes
 the full e2e flow — scan, select, fix, verify via API, rescan — on all tested
 versions and both demo databases.
@@ -35,7 +35,7 @@ All findings below were **fixed during this engagement** unless marked open.
 
 - **Where**: `src/pages/DuplicatesPage.tsx` / `src/hooks/useFixDuplicates.ts`
 - **What**: the migrated app initially allowed selecting duplicate rows
-  individually. But the fix rewrites the *whole object*, and the server
+  individually. But the fix rewrites the _whole object_, and the server
   rejects any object still containing a duplicate pair (E1106) — so fixing
   one of an object's rows while leaving a sibling row unselected produced a
   doomed PUT ("Fixed 2 issue(s), 1 update(s) failed", with no indication of
@@ -75,7 +75,7 @@ All findings below were **fixed during this engagement** unless marked open.
 - **What**: the GET `fields=:owner` + PUT round-trip is not idempotent for
   `maps`: DHIS2 tries to re-insert the embedded mapViews and fails with
   `ERROR: duplicate key value violates unique constraint "uk_1dw8g..." Key
-  (uid)=(dvs2LH2UUdo) already exists` (HTTP 409). The app correctly reports
+(uid)=(dvs2LH2UUdo) already exists` (HTTP 409). The app correctly reports
   the row as failed, but retrying can never succeed. The v0.2.0 app had the
   same limitation.
 - **Mitigation**: `maps` is in `UNFIXABLE_TYPES`
@@ -159,7 +159,7 @@ DHIS2 hydrates translations into a `Set` on read: two records with identical
 (locale, property, value) in the database are served as **one** by the API
 (verified on 2.40: both rows present in the `dataelement.translations` jsonb,
 API returns one). They self-heal on any save of the object and can never
-appear in this app — only duplicates with *differing* values are actionable.
+appear in this app — only duplicates with _differing_ values are actionable.
 
 #### N3. The Laos demo DB contains real duplicate translations
 
@@ -200,7 +200,7 @@ a single-view tool: no sidebar; react-router is included per platform
 convention (hash router + global-shell URL sync) with a single route.
 
 A per-row selection model was initially attempted but reverted after finding
-H2: the server only accepts an object update once *all* of its duplicate
+H2: the server only accepts an object update once _all_ of its duplicate
 pairs are resolved, so selection is per object (as in v0.2.0), with the value
 choice still made per locale/property row.
 
