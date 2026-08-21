@@ -1,4 +1,4 @@
-# UI test results: Translation Deduplicator Tool v1.0.0
+# UI test results: Translation Deduplication Tool v1.0.0
 
 Tested: 2026-07-09 · App: installed production bundle (`build/bundle/tool-translation-deduplicator-1.0.0.zip`) · Test data: demo seeds + 6 duplicate-translation rows seeded at DB level per instance (`tests/seed_duplicates.py`: 2 data elements, 1 indicator, 1 org unit). The Laos seed additionally contains ~270 genuine pre-existing duplicate rows.
 

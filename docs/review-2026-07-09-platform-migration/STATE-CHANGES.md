@@ -1,14 +1,14 @@
-# State changes: Translation Deduplicator review, 2026-07-09
+# State changes: Translation Deduplication Tool review, 2026-07-09
 
 Every persistent change made during this review, and its disposition.
 
 ## Project files
 
-| File                                                   | Change                                                          | Disposition                                                   |
-| ------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------------------- |
-| entire repo                                            | migrated to App Platform on branch `app-platform-migration`     | committed (`251529f`, `c03acb9`, …); not pushed (user pushes) |
-| `d2auth.json`                                          | **not touched** (obsolete under the platform; still gitignored) | left in place                                                 |
-| `tests/`, `docs/review-2026-07-09-platform-migration/` | new test suite + review artefacts                               | committed                                                     |
+| File                                                   | Change                                                          | Disposition                                       |
+| ------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------- |
+| entire repo                                            | migrated to App Platform on branch `app-platform-migration`     | committed on the branch; not pushed (user pushes) |
+| `d2auth.json`                                          | **not touched** (obsolete under the platform; still gitignored) | left in place                                     |
+| `tests/`, `docs/review-2026-07-09-platform-migration/` | new test suite + review artefacts                               | committed                                         |
 
 ## DHIS2 instances (broker)
 

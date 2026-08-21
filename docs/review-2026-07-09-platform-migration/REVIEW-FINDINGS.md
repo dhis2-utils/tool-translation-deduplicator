@@ -1,4 +1,4 @@
-# Review findings: Translation Deduplicator Tool v1.0.0 (App Platform migration)
+# Review findings: Translation Deduplication Tool v1.0.0 (App Platform migration)
 
 Reviewed: 2026-07-09 · Scope: migration + code review + functional test (DHIS2 2.40–2.43, Sierra Leone + Laos) · Reviewer: agent (Claude Fable 5, Claude Code)
 DHIS2 versions tested: 2.40.12, 2.41.9, 2.42.5.1, 2.43.0.1 (see UI-TEST-RESULTS.md)
@@ -28,7 +28,7 @@ All findings below were **fixed during this engagement** unless marked open.
   scan. Measured live on 2.40: **228,466 API requests in ~5 minutes**, scan
   never completed, `net::ERR_INSUFFICIENT_RESOURCES` in the console.
 - **Fix**: memoized via a module-level TanStack Query `select` function so the
-  filtered array is referentially stable (commit `c03acb9`). Verified live:
+  filtered array is referentially stable (commit "Fix scan-restart loop, register app locales, fix i18n extraction"). Verified live:
   84 requests total, scan completes.
 
 #### H2. Fixing a subset of an object's duplicate rows always failed (fixed — found by user manual testing, 2026-07-10)
@@ -56,7 +56,7 @@ All findings below were **fixed during this engagement** unless marked open.
   `import './locales'`, so the generated i18n resources were never loaded.
   English works by accident (keys are natural-language English); any other
   locale would silently fall back.
-- **Fix**: added `import './locales'` to `App.tsx` (commit `c03acb9`).
+- **Fix**: added `import './locales'` to `App.tsx` (commit "Fix scan-restart loop, register app locales, fix i18n extraction").
 
 #### M2. i18n string extraction silently skipped two strings (fixed)
 
@@ -67,7 +67,7 @@ All findings below were **fixed during this engagement** unless marked open.
   message were missing from `i18n/en.pot`. Runtime rendering was unaffected
   (d2-i18n sets `nsSeparator: false`), so this only breaks translatability.
 - **Fix**: rephrased to avoid `:` in keys and renamed `count` → `selected`
-  (commit `c03acb9`). Both strings now extract.
+  (commit "Fix scan-restart loop, register app locales, fix i18n extraction"). Both strings now extract.
 
 #### M3. `maps` cannot be fixed: PUT round-trip fails with a 409 unique-constraint error (mitigated 2026-07-10 — flagged in UI)
 

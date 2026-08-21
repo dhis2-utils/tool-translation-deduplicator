@@ -1,6 +1,6 @@
 # Environment & skill improvement suggestions
 
-Collected during the Translation Deduplicator migration + review
+Collected during the Translation Deduplication Tool migration + review
 (2026-07-09/10, DHIS2 2.40–2.43, Sierra Leone + Laos). Each item:
 what happened → what to change. Grouped by where the change belongs.
 
