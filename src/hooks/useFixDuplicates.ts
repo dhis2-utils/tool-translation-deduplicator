@@ -49,7 +49,12 @@ const extractErrorMessage = (error: unknown): string => {
     if (reports?.length) {
         return reports.join('; ')
     }
-    return error instanceof Error ? error.message : String(error)
+    if (error instanceof Error) {
+        return error.message
+    }
+    return typeof error === 'string'
+        ? error
+        : i18n.t('An unknown error occurred')
 }
 
 /**

@@ -5,6 +5,8 @@
 # Usage: tests/e2e/run_version.sh <host> <label>
 #   e.g. tests/e2e/run_version.sh dhis2-agent-td41 2.41-sl
 # Assumes admin:district and the DB at <host>-db:5432 (broker defaults).
+# The targets are disposable broker containers on a local Docker network
+# that only serve plain HTTP; there is no TLS endpoint to point this at.
 set -euo pipefail
 
 HOST="$1"
@@ -14,12 +16,12 @@ ZIP=$(ls build/bundle/tool-translation-deduplicator-*.zip | head -1)
 MANIFEST="${TMPDIR:-/tmp}/seed-manifest-$LABEL.json"
 
 echo "== waiting for $BASE"
-for i in $(seq 1 90); do
+for _ in $(seq 1 90); do
     code=$(curl -s -o /dev/null -w '%{http_code}' -u admin:district --max-time 5 "$BASE/api/system/info" 2>/dev/null || true)
-    [ "$code" = "200" ] && break
+    [[ "$code" == "200" ]] && break
     sleep 10
 done
-[ "$code" = "200" ] || { echo "instance never came up"; exit 1; }
+[[ "$code" == "200" ]] || { echo "instance never came up"; exit 1; }
 curl -s -u admin:district "$BASE/api/system/info" | python3 -c "import json,sys; print('version:', json.load(sys.stdin)['version'])"
 
 echo "== installing app"

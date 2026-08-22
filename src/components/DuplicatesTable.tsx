@@ -33,16 +33,16 @@ interface DuplicatesTableProps {
 /** Group adjacent rows belonging to the same object, preserving order. */
 const groupByObject = (duplicates: DuplicateGroup[]): DuplicateGroup[][] => {
     const groups: DuplicateGroup[][] = []
+    let current: DuplicateGroup[] | undefined
+    let currentKey: string | undefined
     for (const duplicate of duplicates) {
-        const current = groups[groups.length - 1]
-        if (
-            current &&
-            current[0].objectType === duplicate.objectType &&
-            current[0].objectId === duplicate.objectId
-        ) {
+        const key = `${duplicate.objectType}|${duplicate.objectId}`
+        if (current && key === currentKey) {
             current.push(duplicate)
         } else {
-            groups.push([duplicate])
+            current = [duplicate]
+            currentKey = key
+            groups.push(current)
         }
     }
     return groups
