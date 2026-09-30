@@ -1,0 +1,33 @@
+.container {
+    padding: var(--spacers-dp16);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 20px;
+    color: var(--colors-grey900);
+    margin: 0 0 var(--spacers-dp16) 0;
+}
+
+.toolbar {
+    margin-block-end: var(--spacers-dp12);
+}
+
+.notice {
+    margin-block-end: var(--spacers-dp16);
+}
+
+.errorList {
+    margin: 0;
+    padding-inline-start: var(--spacers-dp16);
+}
+
+.centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacers-dp16);
+    min-block-size: 300px;
+}

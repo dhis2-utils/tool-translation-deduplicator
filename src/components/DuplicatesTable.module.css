@@ -1,0 +1,15 @@
+.table {
+    background: var(--colors-white);
+}
+
+.valueList {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacers-dp4);
+    padding-block: var(--spacers-dp4);
+}
+
+.mutedValue {
+    color: var(--colors-grey600);
+}

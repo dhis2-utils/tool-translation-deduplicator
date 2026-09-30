@@ -1,0 +1,17 @@
+# Dependencies and package-manager caches
+node_modules
+.pnpm-store
+pnpm-lock.yaml
+
+# Build output
+build
+compiled
+.d2
+manifest.webapp
+
+# Generated translations
+i18n
+src/locales
+
+# Test artefacts
+tests/e2e/output

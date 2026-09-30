@@ -1,0 +1,87 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2026-07-10T05:31:02.688Z\n"
+"PO-Revision-Date: 2026-07-10T05:31:02.689Z\n"
+
+msgid "Object type"
+msgstr "Object type"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Locale"
+msgstr "Locale"
+
+msgid "Property"
+msgstr "Property"
+
+msgid "Translation to keep"
+msgstr "Translation to keep"
+
+msgid "Cannot be fixed via API"
+msgstr "Cannot be fixed via API"
+
+msgid "Fixed {{fixed}} duplicate translation issue(s)"
+msgstr "Fixed {{fixed}} duplicate translation issue(s)"
+
+msgid "Fixed {{fixed}} issue(s), {{failed}} update(s) failed"
+msgstr "Fixed {{fixed}} issue(s), {{failed}} update(s) failed"
+
+msgid "Loading"
+msgstr "Loading"
+
+msgid "Failed to load metadata"
+msgstr "Failed to load metadata"
+
+msgid "An unknown error occurred"
+msgstr "An unknown error occurred"
+
+msgid "Scanning metadata for duplicate translations…"
+msgstr "Scanning metadata for duplicate translations…"
+
+msgid "Scan progress"
+msgstr "Scan progress"
+
+msgid "Duplicate translations"
+msgstr "Duplicate translations"
+
+msgid "Some updates failed"
+msgstr "Some updates failed"
+
+msgid "Some object types could not be checked"
+msgstr "Some object types could not be checked"
+
+msgid ""
+"The following types were skipped because of missing access or an error — "
+"{{types}}"
+msgstr ""
+"The following types were skipped because of missing access or an error — "
+"{{types}}"
+
+msgid "No duplicate translations found"
+msgstr "No duplicate translations found"
+
+msgid "All checked metadata has at most one translation per locale and property."
+msgstr "All checked metadata has at most one translation per locale and property."
+
+msgid "Rescan"
+msgstr "Rescan"
+
+msgid "Fix selected ({{selected}})"
+msgstr "Fix selected ({{selected}})"
+
+msgctxt "Application title"
+msgid "__MANIFEST_APP_TITLE"
+msgstr "Translation Deduplication Tool"
+
+msgctxt "Application description"
+msgid "__MANIFEST_APP_DESCRIPTION"
+msgstr "Tool to identify and remove duplicate translation keys in metadata."
