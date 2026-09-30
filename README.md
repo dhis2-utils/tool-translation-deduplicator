@@ -1,13 +1,15 @@
 # Translation Deduplication Tool
 
-Tool to identify and fix metadata objects with duplicate translations (one object having multiple translations for the same locale and property).
-
+> ![Maturity: Validated](https://img.shields.io/badge/maturity-Validated-yellow)  
+> Intended use: remove duplicate translations from metadata objects (one object having multiple translations for the same locale and property).  
+> Maintainers: HISP Centre implementation team.
+>
 > **WARNING**
 > This tool is intended to be used by system administrators to perform specific tasks, it is not intended for end users. It is available as a DHIS2 app, but has not been through the same rigorous testing as normal core apps. It should be used with care, and always tested in a development environment.
 
 ## License
 
-© Copyright University of Oslo 2024
+© Copyright University of Oslo 2026
 
 ## Getting started
 
