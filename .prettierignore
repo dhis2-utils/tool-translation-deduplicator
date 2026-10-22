@@ -13,5 +13,7 @@ manifest.webapp
 i18n
 src/locales
 
-# Test artefacts
-tests/e2e/output
+
+# Vendored by `ultracite init --install-skill`; hash-checked by skills-lock.json
+.agents
+skills-lock.json

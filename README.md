@@ -41,12 +41,13 @@ The app starts on http://localhost:3000. The proxy forwards API requests to the 
 
 ```bash
 pnpm test        # unit tests (src/**/*.test.ts)
-pnpm lint        # ESLint and Prettier
+pnpm lint        # Ultracite on Oxlint and Oxfmt, over the DHIS2 house style
+pnpm fix         # apply the safe fixes
 pnpm exec tsc --noEmit
 pnpm build       # writes build/bundle/tool-translation-deduplicator-<version>.zip
 ```
 
-The end-to-end suite drives the built app on a live DHIS2 instance. It changes and deletes data, so run it only on a throwaway instance. See [`e2e/README.md`](e2e/README.md).
+Linting follows the [shared lint setup](https://github.com/dhis2-utils/reference-tool-conventions/blob/main/LINTING.md); `AGENTS.md` has the rules for coding agents. The end-to-end suite drives the built app on a live DHIS2 instance. It changes and deletes data, so run it only on a throwaway instance. See [`e2e/README.md`](e2e/README.md).
 
 ### Release
 

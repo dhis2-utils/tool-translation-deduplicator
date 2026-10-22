@@ -11,11 +11,8 @@ import {
     Tag,
 } from '@dhis2/ui'
 import React from 'react'
-import {
-    DuplicateGroup,
-    duplicateGroupKey,
-    UNFIXABLE_TYPES,
-} from '../lib/translationTypes'
+import type { DuplicateGroup } from '../lib/translationTypes'
+import { duplicateGroupKey, UNFIXABLE_TYPES } from '../lib/translationTypes'
 import styles from './DuplicatesTable.module.css'
 
 interface DuplicatesTableProps {

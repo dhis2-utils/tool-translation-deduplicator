@@ -9,16 +9,10 @@ import {
 import React, { useCallback, useState } from 'react'
 import { DuplicatesTable } from '../components/DuplicatesTable'
 import { useDuplicateScan } from '../hooks/useDuplicateScan'
-import {
-    FailedObject,
-    FixSelection,
-    useFixDuplicates,
-} from '../hooks/useFixDuplicates'
-import {
-    DuplicateGroup,
-    duplicateGroupKey,
-    UNFIXABLE_TYPES,
-} from '../lib/translationTypes'
+import type { FailedObject, FixSelection } from '../hooks/useFixDuplicates'
+import { useFixDuplicates } from '../hooks/useFixDuplicates'
+import type { DuplicateGroup } from '../lib/translationTypes'
+import { duplicateGroupKey, UNFIXABLE_TYPES } from '../lib/translationTypes'
 import styles from './DuplicatesPage.module.css'
 
 export const DuplicatesPage = () => {

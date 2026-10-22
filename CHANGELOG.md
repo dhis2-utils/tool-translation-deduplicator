@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - the e2e suite moved to `e2e/` and follows the `e2e/run.sh` contract: it seeds its own objects through the API, cleans up after itself and writes `results.json`
 - the CI and release workflows match the current templates (read-only CI token, no dependency cache in the release job, re-runnable release step)
 - the app description no longer repeats the word "tool"
+- linting and formatting moved from ESLint and Prettier to Ultracite on Oxlint and Oxfmt, with the DHIS2 house style (shared lint templates)
 
 ### Security
 
