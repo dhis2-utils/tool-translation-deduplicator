@@ -1,7 +1,7 @@
 {
     "name": "tool-translation-deduplicator",
     "version": "1.0.0",
-    "description": "Tool to identify and remove duplicate translation keys in metadata.",
+    "description": "Finds and removes duplicate translations in metadata objects.",
     "license": "BSD-3-Clause",
     "private": true,
     "author": "HISP Centre - University of Oslo <olav@dhis2.org>",
@@ -20,7 +20,7 @@
         "@tanstack/react-query": "^4.36.1",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
-        "react-router-dom": "^6.30.1"
+        "react-router-dom": "^6.30.6"
     },
     "devDependencies": {
         "@dhis2/cli-app-scripts": "12.10.3",
