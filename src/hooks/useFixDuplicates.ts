@@ -1,12 +1,8 @@
 import { useAlert, useDataEngine } from '@dhis2/app-runtime'
 import i18n from '@dhis2/d2-i18n'
 import { useMutation } from '@tanstack/react-query'
-import {
-    DuplicateGroup,
-    Translation,
-    duplicateGroupKey,
-    translationKey,
-} from '../lib/translationTypes'
+import type { DuplicateGroup, Translation } from '../lib/translationTypes'
+import { duplicateGroupKey, translationKey } from '../lib/translationTypes'
 
 export interface FixSelection {
     group: DuplicateGroup
@@ -107,6 +103,7 @@ export const useFixDuplicates = ({
             for (const objectSelections of byObject.values()) {
                 const { objectType, objectId } = objectSelections[0].group
                 try {
+                    // oxlint-disable-next-line no-await-in-loop -- one object at a time keeps the load on the server low and each failure separate
                     const response = (await engine.query({
                         object: {
                             resource: objectType,
@@ -130,6 +127,7 @@ export const useFixDuplicates = ({
                         })
                     }
 
+                    // oxlint-disable-next-line no-await-in-loop -- one object at a time, as for the query above
                     await engine.mutate({
                         resource: objectType,
                         id: objectId,

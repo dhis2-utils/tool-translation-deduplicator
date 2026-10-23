@@ -11,4 +11,4 @@ bin
 d2auth.json
 .DS_Store
 src/locales
-tests/e2e/output
+__pycache__/

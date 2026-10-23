@@ -1,7 +1,7 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { buildDuplicateGroups } from '../lib/findDuplicates'
-import {
+import type {
     DuplicateGroup,
     TranslatableSchema,
     TranslatedObject,
@@ -56,6 +56,7 @@ export const useDuplicateScan = () => {
 
             for (const [index, type] of types.entries()) {
                 try {
+                    // oxlint-disable-next-line no-await-in-loop -- one type at a time: each request reads every object of the type, so parallel requests would load the server heavily
                     const response = (await engine.query({
                         objects: {
                             resource: type.plural,
@@ -97,12 +98,14 @@ export const useDuplicateScan = () => {
     )
 
     useEffect(() => {
+        // The same ref object, so the cleanup bumps the live counter
+        const scanCounter = scanIdRef
         if (schemas) {
             runScan(schemas)
         }
         return () => {
             // Invalidate the in-flight scan on unmount/schema change
-            scanIdRef.current++
+            scanCounter.current++
         }
     }, [schemas, runScan])
 

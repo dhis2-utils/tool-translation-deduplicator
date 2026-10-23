@@ -1,7 +1,7 @@
-import { TranslatableSchema } from '../lib/translationTypes'
+import type { TranslatableSchema } from '../lib/translationTypes'
 import { useApiDataQuery } from '../utils/useApiDataQuery'
 
-type SchemasResponse = {
+interface SchemasResponse {
     schemas: TranslatableSchema[]
 }
 

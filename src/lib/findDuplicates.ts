@@ -1,9 +1,9 @@
-import {
+import type {
     DuplicateGroup,
     Translation,
     TranslatedObject,
-    translationKey,
 } from './translationTypes'
+import { translationKey } from './translationTypes'
 
 /**
  * Group an object's translations by (locale, property) and return the

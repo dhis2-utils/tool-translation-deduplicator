@@ -4,7 +4,7 @@ const config = {
     name: 'tool-translation-deduplicator',
     title: 'Translation Deduplication Tool',
     description:
-        'Tool to identify and remove duplicate translation keys in metadata.',
+        'Finds and removes duplicate translations in metadata objects.',
     minDHIS2Version: '2.40',
 
     entryPoints: {
