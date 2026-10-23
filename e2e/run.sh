@@ -2,7 +2,7 @@
 # e2e contract entry point (reference-tool-conventions TESTING.md, contract v1).
 #
 #   DHIS2_URL=http://localhost:8080 DHIS2_USER=<user> DHIS2_PASS=<password> \
-#   APP_ZIP=$PWD/build/bundle/tool-translation-deduplicator-1.0.0.zip \
+#   APP_ZIP=$PWD/build/bundle/tool-translation-deduplicator-<version>.zip \
 #   RESULTS_DIR=/tmp/e2e-results e2e/run.sh
 #
 # WARNING: changes and deletes data. Throwaway instances only.

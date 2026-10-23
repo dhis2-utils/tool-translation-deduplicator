@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-07-10T05:31:02.688Z\n"
-"PO-Revision-Date: 2026-07-10T05:31:02.689Z\n"
+"POT-Creation-Date: 2026-10-23T08:18:01.039Z\n"
+"PO-Revision-Date: 2026-10-23T08:18:01.040Z\n"
 
 msgid "Object type"
 msgstr "Object type"
@@ -29,6 +29,9 @@ msgstr "Translation to keep"
 msgid "Cannot be fixed via API"
 msgstr "Cannot be fixed via API"
 
+msgid "An unknown error occurred"
+msgstr "An unknown error occurred"
+
 msgid "Fixed {{fixed}} duplicate translation issue(s)"
 msgstr "Fixed {{fixed}} duplicate translation issue(s)"
 
@@ -40,9 +43,6 @@ msgstr "Loading"
 
 msgid "Failed to load metadata"
 msgstr "Failed to load metadata"
-
-msgid "An unknown error occurred"
-msgstr "An unknown error occurred"
 
 msgid "Scanning metadata for duplicate translations…"
 msgstr "Scanning metadata for duplicate translations…"
@@ -84,4 +84,4 @@ msgstr "Translation Deduplication Tool"
 
 msgctxt "Application description"
 msgid "__MANIFEST_APP_DESCRIPTION"
-msgstr "Tool to identify and remove duplicate translation keys in metadata."
+msgstr "Finds and removes duplicate translations in metadata objects."
