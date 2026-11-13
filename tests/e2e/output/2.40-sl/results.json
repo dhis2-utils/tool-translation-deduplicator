@@ -1,0 +1,72 @@
+{
+  "label": "2.40-sl",
+  "serverVersion": "2.40.12",
+  "results": [
+    {
+      "step": "server version",
+      "status": "INFO",
+      "detail": "2.40.12"
+    },
+    {
+      "step": "app loads",
+      "status": "PASS",
+      "detail": "iframe=False"
+    },
+    {
+      "step": "scan completes with duplicates found",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "step": "seeded duplicates listed",
+      "status": "PASS",
+      "detail": "6 rows total"
+    },
+    {
+      "step": "choose non-default translation",
+      "status": "PASS",
+      "detail": "Doublon B"
+    },
+    {
+      "step": "select all",
+      "status": "PASS",
+      "detail": "6/6"
+    },
+    {
+      "step": "fix selected completes",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "step": "API state after fix",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "step": "rescan finds no duplicates",
+      "status": "PASS",
+      "detail": ""
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at Ll (http://dhis2-agent-td40:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:90:108797)\n    at new rq (http://dhis2-agent-td40:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:90:109371)\n    at http://dhis2-agent-td40:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:99:3974"
+    ],
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at Ll (http://dhis2-agent-td40:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:90:108797)\n    at rq.getClientsInfo (http://dhis2-agent-td40:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:90:110111)\n    at http://dhis2-agent-td40:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:108:2566"
+    ],
+    [
+      "error",
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ]
+  ],
+  "httpErrors": [
+    [
+      404,
+      "http://dhis2-agent-td40:8080/api/40/staticContent/logo_banner"
+    ]
+  ]
+}

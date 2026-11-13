@@ -1,0 +1,84 @@
+{
+  "label": "2.41-lao",
+  "serverVersion": "2.41.9",
+  "results": [
+    {
+      "step": "server version",
+      "status": "INFO",
+      "detail": "2.41.9"
+    },
+    {
+      "step": "app loads",
+      "status": "PASS",
+      "detail": "iframe=False"
+    },
+    {
+      "step": "scan completes with duplicates found",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "step": "seeded duplicates listed",
+      "status": "PASS",
+      "detail": "11 rows total"
+    },
+    {
+      "step": "choose non-default translation",
+      "status": "PASS",
+      "detail": "Doublon B"
+    },
+    {
+      "step": "select all",
+      "status": "PASS",
+      "detail": "11/11"
+    },
+    {
+      "step": "fix selected completes",
+      "status": "PASS",
+      "detail": "alert: 'Fixed 10 issue(s), 1 update(s) failed', rows remaining: 1"
+    },
+    {
+      "step": "API state after fix",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "step": "rescan: seeded duplicates gone",
+      "status": "PASS",
+      "detail": "5 pre-existing rows remain"
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at Ll (http://dhis2-agent-tdlao:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:90:108797)\n    at new rq (http://dhis2-agent-tdlao:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:90:109371)\n    at http://dhis2-agent-tdlao:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:99:3974"
+    ],
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at Ll (http://dhis2-agent-tdlao:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:90:108797)\n    at rq.getClientsInfo (http://dhis2-agent-tdlao:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:90:110111)\n    at http://dhis2-agent-tdlao:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:108:2566"
+    ],
+    [
+      "error",
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    [
+      "error",
+      "Failed to load resource: the server responded with a status of 409 ()"
+    ],
+    [
+      "error",
+      "Failed to update maps/ZALsU2C8cqM: kg: ERROR: duplicate key value violates unique constraint \"uk_1dw8gju4leg7iud4gpsr5r1ng\"\n  Detail: Key (uid)=(dvs2LH2UUdo) already exists.\n    at bM (http://dhis2-agent-tdlao:8080/api/apps/tool-translation-deduplicator/assets/main-CdbLd-Gb.js:64:3911)\n    at async Va.onSuccess.r.fixed [as mutationFn] (http://dhis2-agent-tdlao:8080/api/apps/tool-translation-deduplicator/assets/App-Ba5Ixd3a.js:31:10318)"
+    ]
+  ],
+  "httpErrors": [
+    [
+      404,
+      "http://dhis2-agent-tdlao:8080/api/41/staticContent/logo_banner"
+    ],
+    [
+      409,
+      "http://dhis2-agent-tdlao:8080/api/41/maps/ZALsU2C8cqM"
+    ]
+  ]
+}

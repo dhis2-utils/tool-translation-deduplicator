@@ -1,0 +1,110 @@
+{
+  "label": "2.43-sl-fix",
+  "serverVersion": "2.43.0.1",
+  "results": [
+    {
+      "step": "server version",
+      "status": "INFO",
+      "detail": "2.43.0.1"
+    },
+    {
+      "step": "app loads",
+      "status": "PASS",
+      "detail": "iframe=True"
+    },
+    {
+      "step": "scan completes with duplicates found",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "step": "seeded duplicates listed",
+      "status": "PASS",
+      "detail": "6 rows total"
+    },
+    {
+      "step": "choose non-default translation",
+      "status": "PASS",
+      "detail": "Doublon B"
+    },
+    {
+      "step": "partial selection selects whole object",
+      "status": "PASS",
+      "detail": "Fix selected (2)"
+    },
+    {
+      "step": "fix single multi-pair object",
+      "status": "PASS",
+      "detail": "alert: 'Fixed 2 duplicate translation issue(s)', rows gone: True"
+    },
+    {
+      "step": "select all",
+      "status": "PASS",
+      "detail": "3/3 objects"
+    },
+    {
+      "step": "fix selected completes",
+      "status": "PASS",
+      "detail": "alert: 'Fixed 4 duplicate translation issue(s)', rows remaining: 0"
+    },
+    {
+      "step": "API state after fix",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "step": "rescan: seeded duplicates gone",
+      "status": "PASS",
+      "detail": "0 pre-existing rows remain"
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at sl (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:42656)\n    at new X$ (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:43070)\n    at uE (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:46141)\n    at Om (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:52:17081)\n    at CS (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:44058)\n    at bS (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:39790)\n    at UD (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:39718)\n    at mf (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:39570)\n    at _S (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:34647)\n    at H (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:39:1659)"
+    ],
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at sl (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:42656)\n    at X$.getClientsInfo (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:43822)\n    at http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:102:2119"
+    ],
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at sl (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:42656)\n    at mp (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:42717)\n    at X$.getCachedSections (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:45493)\n    at http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:64:23757\n    at zf (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:24283)\n    at Ks (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:42409)\n    at http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:40726\n    at H (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:39:1659)\n    at MessagePort.st (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:39:2044)"
+    ],
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at sl (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:42656)\n    at X$.subscribeToDhis2ConnectionStatus (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:44552)\n    at http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:90:14884\n    at zf (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:24283)\n    at Ks (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:42409)\n    at http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:54:40726\n    at H (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:39:1659)\n    at MessagePort.st (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:39:2044)"
+    ],
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at Ll (http://dhis2-agent-fixtest:8080/api/apps/tool-translation-deduplicator/assets/main-CoLHMD8x.js:90:108797)\n    at new rq (http://dhis2-agent-fixtest:8080/api/apps/tool-translation-deduplicator/assets/main-CoLHMD8x.js:90:109371)\n    at http://dhis2-agent-fixtest:8080/api/apps/tool-translation-deduplicator/assets/main-CoLHMD8x.js:99:3974"
+    ],
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at Yt (http://dhis2-agent-fixtest:8080/apps/assets/App-Xt96OVoe.js:3:16478)\n    at new Wo (http://dhis2-agent-fixtest:8080/apps/assets/App-Xt96OVoe.js:3:16552)\n    at http://dhis2-agent-fixtest:8080/apps/assets/App-Xt96OVoe.js:14:21114\n    at http://dhis2-agent-fixtest:8080/apps/assets/App-Xt96OVoe.js:59:2064\n    at Object.u4 (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:51:9864)\n    at f4 (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:51:10018)\n    at d4 (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:51:10075)\n    at v1 (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:51:31462)\n    at Cx (http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:51:31879)\n    at http://dhis2-agent-fixtest:8080/apps/assets/main-DBaOIGQO.js:51:36792"
+    ],
+    [
+      "error",
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ],
+    [
+      "error",
+      "Error: This window is not a secure context -- see https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts. PWA features will not work.\n    at Ll (http://dhis2-agent-fixtest:8080/api/apps/tool-translation-deduplicator/assets/main-CoLHMD8x.js:90:108797)\n    at rq.getClientsInfo (http://dhis2-agent-fixtest:8080/api/apps/tool-translation-deduplicator/assets/main-CoLHMD8x.js:90:110111)\n    at http://dhis2-agent-fixtest:8080/api/apps/tool-translation-deduplicator/assets/main-CoLHMD8x.js:108:2566"
+    ],
+    [
+      "error",
+      "Failed to load resource: the server responded with a status of 404 ()"
+    ]
+  ],
+  "httpErrors": [
+    [
+      404,
+      "http://dhis2-agent-fixtest:8080/api/43/staticContent/logo_banner"
+    ],
+    [
+      404,
+      "http://dhis2-agent-fixtest:8080/api/43/staticContent/logo_banner"
+    ]
+  ]
+}
